@@ -1,0 +1,61 @@
+<html>
+
+<head>
+
+<script src="/static/lib/jquery-2.1.4.min.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="/scripts/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="/scripts/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="/scripts/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" href="/static/css/style.css"/>
+<script type="text/javascript" src="/static/js/main.js"></script>
+
+<script>
+$(document).ready(function(){
+   $("#loginBtn").click(function(e){
+   		e.preventDefault();
+   		authenticateUser();
+   });
+});
+
+</script>
+</head>
+
+<body>
+	<div class="container">
+		<div class="row" style="margin-top:20px">
+		    <div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+				<form role="form" class="loginForm">
+					<fieldset>
+						<div class="left mt15 logo">
+							<a href="#" class="logo"><img src="/static/images/logo.png"></a>
+						</div>
+						<hr class="colorgraph logingraph">
+						<div class="form-group">
+		                    <input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username">
+						</div>
+						<div class="form-group">
+		                    <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
+						</div>
+						<div class="row">
+							<div class="col-xs-6 col-sm-6 col-md-6">
+		                        <input type="submit" class="btn btn-lg btn-success btn-block" id="loginBtn" value="Sign In">
+							</div>
+							<div class="col-xs-6 col-sm-6 col-md-6">
+								<a href="/static/design/signup.html" class="btn btn-lg btn-primary btn-block">Register</a>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

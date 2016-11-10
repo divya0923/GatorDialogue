@@ -1,0 +1,80 @@
+<html>
+
+<head>
+
+<script src="/static/lib/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" href="/static/css/style.css"/>
+<script type="text/javascript" src="/static/js/main.js"></script>
+<link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
+<script type="text/javascript" src="/static/lib/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">
+
+
+<link rel="stylesheet" href="/scripts/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<link rel="stylesheet" href="/scripts/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<script src="/scripts/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		loadQuestionsTable();
+	});
+</script>
+
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<nav class="navbar fs20" role="navigation">
+				<div class="left mt15 logo">
+					<a href="/static/design/home.html" class="logo"><img src="/static/images/logo.png"></a>
+				</div>
+				<div class="right mt15">
+					<ul class="nav nav-pills">
+				    	<li role="presentation" class="dropdown">
+					    	<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					      		<img src="/static/images/profile.jpg"> 
+					      		<span> dmahendran </span>
+					      		<span class="caret"></span>
+					    	</a>
+						    <ul class="dropdown-menu" id="profileMenu">
+						      <li> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
+						      <li> <i class="fa fa-cog fa-lg" aria-hidden="true"></i> Settings </li>
+						    </ul>
+				  		</li>
+				  	</ul>
+				</div>
+            </nav>
+		</div>
+	</header>
+	<hr class="colorgraph headergraph">
+
+	<div class="container grid">
+		<div class="left grid-col col80 mt20">
+			<div class="section-title">
+					<span>Top Questions</span>
+			</div>
+			<div id="questionsTableWrapper" class="mb40">
+				<table id="questionsDTable" class="display" width="100%"></table>
+			</div>
+		</div>
+
+		<div class="right grid-col col25 mt15 mr85">
+			<div id="relatedQuestions">
+				<h4> Related Questions </h4>
+				<ul class="bg-white">
+					<li> <a> What does “%3d” mean in a printf statement? </a> </li>
+					<li> <a> What does “%3d” mean in a printf statement? </a> </li>
+					<li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li> 
+					<li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li>
+				</ul>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+
+</html>

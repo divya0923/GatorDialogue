@@ -16,10 +16,8 @@ app.listen(3000, function(){
 });
 
 // body parser config 
-app.use( bodyParser.json() );       
-app.use(bodyParser.urlencoded({     
-  extended: true
-}));
+app.use(bodyParser.json());       
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/createUser', function (req, res) {
    if (req.method == 'POST') {
@@ -42,15 +40,20 @@ app.post('/createUser', function (req, res) {
     }
 });
 
-app.get('/testUserAuth', function(req,res){
-  console.log(req.param('test'));
+app.post('/authenticateUser', function(req,res){
+  console.log('post params: ' + req.param('username'), req.param('password'));
   nano.auth('dmahendran', 'dmahe', function (err, body, headers) {
   if (err) {
     console.log("authentication failed");
   }
- 
   if (headers && headers['set-cookie']) {
      res.send(headers['set-cookie']);
   }
   });
+
+app.get('/test', function(req, res){
+  console.log("test");
+  res.send("{'a' : 'b'}");
+});
+
 });
