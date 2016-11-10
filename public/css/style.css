@@ -322,7 +322,7 @@ float: left;
 }
 .btn-light-blue, .btn-light-blue.ui-state-hover{
 /*background-color: #60d3ef !important;*/
-    background-color: #89C35C !important;
+    background-color: #005999 !important;
 }
 .btn-black, .btn-black.ui-state-hover{
 background-color: grey !important;
@@ -468,6 +468,7 @@ display: none;
     top: 36px;
     position: relative;
     z-index: 1;
+    margin-top: -106px;
 }
 #sessionCategoriesDropdown input.selectivity-multiple-input {
     width: 100% !important;
@@ -883,4 +884,9 @@ textarea.error{
 .views {
     padding-top: 4px;
     text-align: center;
+}
+
+#question-action-links-wrapper ul{
+    margin-left: -90px;
+    padding-top: 25px;
 }

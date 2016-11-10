@@ -1,0 +1,102 @@
+<html>
+
+<head>
+
+<script src="/static/lib/jquery-2.1.4.min.js"></script>
+<script src="/static/lib/ckeditor/ckeditor.js"></script>
+<link rel="stylesheet" href="/static/css/style.css"/>
+<script type="text/javascript" src="/static/js/main.js"></script>
+<link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
+<script type="text/javascript" src="/static/lib/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">
+
+<link rel="stylesheet" href="/scripts/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<link rel="stylesheet" href="/scripts/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<script src="/scripts/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		CKEDITOR.replace('questionDesc');
+        CKEDITOR.config.removePlugins = 'toolbar';
+        CKEDITOR.instances.questionDesc.readOnly(true);
+	});
+</script>
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<nav class="navbar fs20" role="navigation">
+				<div class="left mt15 logo">
+					<a href="/static/design/home.html" class="logo"><img src="/static/images/logo.png"></a>
+				</div>
+				<div class="right mt15">
+					<span class="leaderBoard"> 
+										
+ 					</span> 
+					<ul class="nav nav-pills"> 
+						<li class="mt15">
+							<i class="fa fa-trophy fa-lg" aria-hidden="true"></i> Leaderboard 		
+						</li>
+				    	<li role="presentation" class="dropdown">
+					    	<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					      		<img src="/static/images/profile.jpg"> 
+					      		<span> dmahendran </span>
+					      		<span class="caret"></span>
+					    	</a>
+						    <ul class="dropdown-menu" id="profileMenu">
+						    	<li> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
+						    	<li> <i class="fa fa-cog fa-lg" aria-hidden="true"></i> Settings </li>
+						    	<li> <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i> Logout </li>
+						    </ul>
+				  		</li>
+				  	</ul>
+				</div>
+            </nav>
+		</div>
+	</header>
+	<hr class="colorgraph headergraph">
+
+	<div class="container grid">
+		<div class="left grid-col col80 mt20">
+			<div class="section-title">
+					<span>Ask Question</span>
+			</div>
+			<form method="POST" id="questionForm" class="question-form">
+			<div id="question-details-container" class="bg-thick-grey p20">
+					<div class="body">
+						<!--Just add input boxes, no labels-->
+						<input type="text" id="title" class="mt15" placeholder="Title" name="title"/>
+						<div style="height:20px;"> </div>
+						<textarea id="questionDesc" class="mt15" placeholder="Elaborate your event in detail" rows="6" cols="40" name="questionDesc" ></textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<div class="right grid-col col25 mt15 mr85">
+			<div id="relatedQuestions">
+				<h4> Related Questions </h4>
+				<ul class="bg-white">
+					<li> <a> What does “%3d” mean in a printf statement? </a> </li>
+					<li> <a> What does “%3d” mean in a printf statement? </a> </li>
+					<li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li> 
+					<li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="question-action-links-wrapper" class="mt30">
+			<ul class="fx fx-center mb40">
+				<li class="left pr20"><a id="cancel-session-link" class="btn btn-black"><i class="fa fa-times-circle pr5"></i>Cancel</a></li>
+				<li class="right"><a id="save-session-link" class="btn btn-light-blue"><i class="fa fa-check pr5"></i>Post</a></li>
+			</ul>
+		</div>
+
+	</div>
+
+</body>
+
+</html>
