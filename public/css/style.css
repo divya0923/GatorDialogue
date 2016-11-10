@@ -481,17 +481,18 @@ overflow-x: hidden;
 .dataTables_wrapper .dataTables_filter input {
     margin-left: 0 !important;
 }
-.section-title{
+.section-title {
     padding-bottom: 10px;
-    color: #ffffff;
-    background-color: #357EC7;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    padding: 10px;
+    color: black;
+    /* background-color: #357EC7; */
+    margin-bottom: 19px;
+    /* text-transform: uppercase; */
+    /* padding: 10px; */
     font-size: 18px;
-    text-align: center;
-    border-bottom: 3px solid #89C35C;
+    /* text-align: center; */
+    border-bottom: 2px solid grey;
 }
+
 .ui-widget-header .ui-icon {
     background-image: url("images/ui-icons_222222_256x240.png") !important;
 }

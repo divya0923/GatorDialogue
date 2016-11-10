@@ -118,7 +118,7 @@ var populateQuestionsData = function(){
 
         var str = "test question";
 
-        var questionStr = '<div class="left pr20">' +  countStr +
+        var questionStr = '<div class="left pr20">' +
 		                    '<div class="quesTitle">' + str +'</div>'+
 		                    '<div class="post-taglist">' + tagStr + '</div>' + 
 		                    '</div>'+
