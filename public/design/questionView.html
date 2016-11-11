@@ -21,6 +21,15 @@
 		CKEDITOR.replace('questionDesc');
         CKEDITOR.config.removePlugins = 'toolbar';
         CKEDITOR.instances.questionDesc.readOnly(true);
+        initializeSelectivityForSessionCategories();
+				$("input[name='addressText']").keyup(suggestLocation); 
+
+				$("#sessionCategoriesDropdown").on( "change", function(e) {
+				  if(e.removed!=undefined){
+				  	console.log("removed = %o",e.removed);
+				  	initializeSelectivityForSessionCategories();
+				  }
+				});
 	});
 </script>
 </head>

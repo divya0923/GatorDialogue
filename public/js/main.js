@@ -142,3 +142,118 @@ var populateQuestionsData = function(){
 	}
 	return questions;     
 }
+
+function initializeSelectivityForQuestionTags(){
+	console.log('initializeSelectivityForQuestionTags');
+	 var tags = getTags();
+	 var items = constructSelectivityDataForTags(tags);
+	 $('#questionTags').selectivity({
+		 items: items,
+		 multiple: true,
+	   	 placeholder: 'Tags',
+	   	 createTokenItem: function(token){
+	   	 	console.log('create token item called %o',token);
+	   	 	$('.selectivity-multiple-input').val("");
+	   	 	var itemArray = $('#questionTags').selectivity('data');
+	   	 	// When there are no categories in the system
+	   	 	if(itemArray == ""){
+	   	 		console.log('added session cat if');
+	   	 		$('#questionTagsForm #tags').val(token);
+   	 			var tagId = addTag();
+		   	 	var pluginItem = {
+					id: tagId,
+					text: token
+				};
+				// Refresh the selectivty since new session category has been added to the system
+				initializeSelectivityForQuestionTags();
+				return pluginItem;
+	   	 	}
+	   	 	// Session categories are available : Some are already selected
+	   	 	else{
+	   	 		// Get the item text values from itemArray
+	   	 		var itemTexts = [];
+	   	 		for(i in itemArray){
+	   	 			itemTexts.push(itemArray[i].text);
+	   	 		}
+	   	 		// Check if the token is already selected/avaialble in the system
+	   	 		if(itemTexts.indexOf(token)!=-1){
+	   	 			// Don't add, clear the input field
+	   	 			return null;
+	   	 		} else {
+	   	 			// Add it to JCR
+	   	 			$('#questionTagsForm #tags').val(token);
+	   	 			var tagId = addTag();
+			   	 	var pluginItem = {
+						id: tagId,
+						text: token
+					};
+					// Refresh the selectivty since new session category has been added to the system
+					initializeSelectivityForQuestionTags();
+					return pluginItem;
+	   	 		}
+	   	 	}
+	   	 	
+	   	}
+	});	
+}
+
+function getTags(){
+	  var tags = [];
+	  for(var i=0; i<5; i++) {
+	    tag = new Object();
+	    tag.name = "tag" + i;
+	    tag.id = i;
+	    tags.push(tag);
+	  }
+	  return tags;
+}
+
+function constructSelectivityDataForTags(tags){
+	var pluginItems = [];
+	for(i=0;i<tags.length;i++){
+		var pluginItem = {
+			id: tags[i].id,
+			text: tags[i].name
+		};
+		pluginItems.push(pluginItem);
+	}
+	return pluginItems;
+}
+
+/* Session categories */
+function addTag() {
+	  	var tagId = uniqueId();
+	  	/*// Set base path
+		var baseTestPath = "/event-data/sessioncategory/sessioncategory-nodes";
+		var testPath = baseTestPath + "/sessioncategory-" + sessionCategoryId;
+		var path = testPath + "/" + sessionCategoryId;
+		// Get the data from the form
+		var params = $('#sessioncategoryForm').serialize();
+		// Post the data to Sling JCR Repository
+		var request = $.ajax({
+		  url: path,
+		  method: "POST",
+		  data: params,
+		  headers:{
+		  	"Content-type":"application/x-www-form-urlencoded",
+		  	"Content-length":params.length,
+		  	"Connection":"close"
+		  }
+		});
+ 
+		request.done(function( msg ) {
+			console.log('session category added');
+		});
+		 
+		request.fail(function( jqXHR, textStatus ) {
+		  window.location = "/index.html"; 
+		});*/
+		return tagId;
+}
+
+/* Generates Unique Id*/
+function uniqueId() {
+	var i = new Date().getTime();
+	i = i & 0xffff; 
+	return i;
+}

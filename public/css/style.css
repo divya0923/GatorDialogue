@@ -451,7 +451,7 @@ display: none;
     font-family: "proxima", sans-serif !important;
     font-size: 16px !important;
 }
-#sessionCategoriesDropdown .selectivity-multiple-input-container {
+#questionTags .selectivity-multiple-input-container {
     background-color: #ffffff;
     border-radius: 3px;
     border: 1px #dedede solid;

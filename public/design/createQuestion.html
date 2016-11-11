@@ -9,6 +9,8 @@
 <link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
 <script type="text/javascript" src="/static/lib/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/static/css/selectivity-full.min.css">
+<script src="/static/lib/selectivity-full.min.js"></script>
 
 <link rel="stylesheet" href="/scripts/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -19,6 +21,13 @@
 <script type="text/javascript">
 	$(document).ready(function(){
         CKEDITOR.replace('questionDesc');
+        initializeSelectivityForQuestionTags();
+		$("#questionTags").on("change", function(e) {
+		  if(e.removed!=undefined){
+		  	console.log("removed = %o",e.removed);
+		  	initializeSelectivityForQuestionTags();
+		  }
+		});
 	});
 </script>
 </head>
@@ -69,6 +78,7 @@
 						<input type="text" id="title" class="mt15" placeholder="Title" name="title"/>
 						<div style="height:20px;"> </div>
 						<textarea id="questionDesc" class="mt15" placeholder="Elaborate your event in detail" rows="6" cols="40" name="questionDesc" ></textarea>
+						<div id="questionTags" class="mt15"></div>
 					</div>
 				</div>
 			</form>
