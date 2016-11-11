@@ -19,10 +19,23 @@ function createUser(){
 		}
 	});
 	request.done(function(status) {
-		console.log("user created successfully");
+		console.log("user created successfully %o", status);
+		$('.signupForm')[0].reset();
+		if(status.isUserCreated){
+			$("#successPlaceholder").removeClass("hide");
+			$("#errorPlaceholder").addClass("hide");
+		}		
+		else {
+			if(status.isDuplicateUser)
+			$('#errorPlaceholder .errorText').html("Username is already in use. Choose a different one!");
+			$("#errorPlaceholder").removeClass("hide");
+			$("#successPlaceholder").addClass("hide");
+		}
+			
 	});	 
 	request.fail(function( jqXHR, textStatus ) {
-	  console.log( "user creation failed" + textStatus );
+	  console.log("user creation failed" + textStatus );
+	  $('#errorPlaceholder').removeClass("hide");
 	});
 };
 

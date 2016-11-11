@@ -15,6 +15,7 @@
 
 <link rel="stylesheet" href="/static/css/style.css"/>
 <script type="text/javascript" src="/static/js/main.js"></script>
+<link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
 
 <script>
 $(document).ready(function(){
@@ -23,9 +24,7 @@ $(document).ready(function(){
 	});
 });
 </script>
-
 </head>
-
 <body>
 	<div class="container">
 		<div class="row" style="margin-top:20px">
@@ -36,6 +35,15 @@ $(document).ready(function(){
 							<a href="#" class="logo"><img src="/static/images/logo.png"></a>
 						</div>
 						<hr class="colorgraph logingraph">
+
+						<div id="successPlaceholder" class="hide">
+							<i class="fa fa-check pr5" style="color:green"></i><span class="successText">Signup successfull. Click <a href="/static/design/login.html"> here</a> to login  </span>
+						</div>
+
+						<div id="errorPlaceholder" class="hide">
+							<i class="fa fa-warning pr5" style="color:orangered"></i><span class="errorText">Something went wrong. Please try again later!</span>
+						</div>
+
 						<div class="form-group">
 		                    <input type="fullName" name="fullName" id="fname" class="form-control input-lg" placeholder="Full Name">
 						</div>
@@ -61,7 +69,6 @@ $(document).ready(function(){
 			</div>
 		</div>
 	</div>
-
 </body>
 
 </html>

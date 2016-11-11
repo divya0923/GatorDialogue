@@ -548,6 +548,11 @@ div#ui-datepicker-div {
 #errorPlaceholder .errorText {
     color: orangered;
 }
+
+#successPlaceholder, #errorPlaceholder{
+    margin : 20px;
+}
+
 #upload-sponsor .file{
     width: 199px;
     position: relative;

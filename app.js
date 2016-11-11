@@ -1,6 +1,5 @@
 var express = require('express');
 var app = express();
-var bodyParser = require('body-parser');
 
 // nano config 
 var nano = require('nano')('http://127.0.0.1:5984/');
@@ -15,27 +14,35 @@ app.listen(3000, function(){
   console.log("Server listening on port 3000!");
 });
 
-// body parser config 
-app.use(bodyParser.json());       
-app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/createUser', function (req, res) {
+  console.log("createUser");
    if (req.method == 'POST') {
+      
       var jsonString = '';
-
       req.on('data', function (data) {
           jsonString += data;
       });
-
+      
       req.on('end', function () {
         postParam = JSON.parse(jsonString);
         console.log("postParam" + postParam);
 
         user.insert(postParam, function(err, body) {
-        if (!err)
-            console.log(body);
+          console.log(body);
+          var msg = new Object();
+          if (!err){
+              msg.isUserCreated = true;
+              msg.isDuplicateUser = false;
+          }
+          else {
+            console.log(err);
+            msg.isUserCreated = false;
+            if(err.statusCode == 409)
+              msg.isDuplicateUser = true;
+          }
+          res.send(msg);  
         });
-
       });
     }
 });
