@@ -28,6 +28,11 @@
 		  	initializeSelectivityForQuestionTags();
 		  }
 		});
+
+		$("#post-question-btn").click(function(){
+			postQuestion();
+		});
+
 	});
 </script>
 </head>
@@ -78,6 +83,12 @@
 						<input type="text" id="title" class="mt15" placeholder="Title" name="title"/>
 						<div style="height:20px;"> </div>
 						<textarea id="questionDesc" class="mt15" placeholder="Elaborate your event in detail" rows="6" cols="40" name="questionDesc" ></textarea>
+						<select id="categoryDropdown">
+							<option value="0">Category</option>
+							<option value="dbms">DBMS</option>
+							<option value="networks">Networks</option>
+							<option value="algorithms">Algorithms</option>
+						</select>
 						<div id="questionTags" class="mt15"></div>
 					</div>
 				</div>
@@ -98,8 +109,8 @@
 
 		<div id="question-action-links-wrapper" class="mt30">
 			<ul class="fx fx-center mb40">
-				<li class="left pr20"><a id="cancel-session-link" class="btn btn-black"><i class="fa fa-times-circle pr5"></i>Cancel</a></li>
-				<li class="right"><a id="save-session-link" class="btn btn-light-blue"><i class="fa fa-check pr5"></i>Post</a></li>
+				<li class="left pr20"><a id="cancel-question-btn" class="btn btn-black" href="/static/design/home.html"><i class="fa fa-times-circle pr5"></i>Cancel</a></li>
+				<li class="right"><a id="post-question-btn" class="btn btn-light-blue"><i class="fa fa-check pr5"></i>Post</a></li>
 			</ul>
 		</div>
 

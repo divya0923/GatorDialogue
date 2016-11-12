@@ -7,6 +7,10 @@ function createUser(){
 	data.type = "user";
 	data.roles = [];
 	data.password = $('#password')[0].value;
+	data.userId = uniqueId();
+	data.email = $('#email')[0].value;
+	data.displayName = $('#fname')[0].value;
+	data.department = $('#department')[0].value;
 
     var request = $.ajax({
 		url: "http://localhost:3000/createUser",
@@ -27,7 +31,7 @@ function createUser(){
 		}		
 		else {
 			if(status.isDuplicateUser)
-			$('#errorPlaceholder .errorText').html("Username is already in use. Choose a different one!");
+				$('#errorPlaceholder .errorText').html("Username is already in use. Choose a different one!");
 			$("#errorPlaceholder").removeClass("hide");
 			$("#successPlaceholder").addClass("hide");
 		}
@@ -42,7 +46,7 @@ function createUser(){
 var authenticateUser = function(){
     var data = new Object();
     data.username = $('#username')[0].value;
-    data.passeword = $('#password')[0].value;
+    data.password = $('#password')[0].value;
 
     var request = $.ajax({
     	url : serverUrl + "/authenticateUser",
@@ -54,16 +58,26 @@ var authenticateUser = function(){
 			"Connection":"close"
 		}
     });
-
     request.done(function(status) {
-		console.log("logged in successfully");
-		$('#username').val("test");
-		var a = "<span> hello </span>";
+		console.log("logged in successfully %o", status.currentUser);
+		if(status.isAuthenticated){
+			localStorage.setItem("loggedInUser", JSON.stringify(status.currentUser));
+			window.location.href = "/static/design/home.html";
+		}
+		else {
+			$('#errorPlaceholder').removeClass("hide");
+		}
 	});	 
 	request.fail(function( jqXHR, textStatus ) {
 	  console.log( "login failed: " + textStatus );
 	});
 };
+
+var postQuestion = function(){
+	var data = new Object();
+	data.title = $("#title")[0].value;
+	data.category = $('#categoryDropdown')[0].value;
+}
 
 var loadQuestionsTable = function(){
 	console.log("loadEventsTable");
@@ -157,45 +171,39 @@ var populateQuestionsData = function(){
 }
 
 function initializeSelectivityForQuestionTags(){
-	console.log('initializeSelectivityForQuestionTags');
-	 var tags = getTags();
-	 var items = constructSelectivityDataForTags(tags);
-	 $('#questionTags').selectivity({
-		 items: items,
-		 multiple: true,
-	   	 placeholder: 'Tags',
-	   	 createTokenItem: function(token){
-	   	 	console.log('create token item called %o',token);
-	   	 	$('.selectivity-multiple-input').val("");
-	   	 	var itemArray = $('#questionTags').selectivity('data');
-	   	 	// When there are no categories in the system
-	   	 	if(itemArray == ""){
-	   	 		console.log('added session cat if');
-	   	 		$('#questionTagsForm #tags').val(token);
-   	 			var tagId = addTag();
-		   	 	var pluginItem = {
-					id: tagId,
-					text: token
-				};
-				// Refresh the selectivty since new session category has been added to the system
-				initializeSelectivityForQuestionTags();
-				return pluginItem;
-	   	 	}
-	   	 	// Session categories are available : Some are already selected
-	   	 	else{
-	   	 		// Get the item text values from itemArray
-	   	 		var itemTexts = [];
-	   	 		for(i in itemArray){
-	   	 			itemTexts.push(itemArray[i].text);
-	   	 		}
-	   	 		// Check if the token is already selected/avaialble in the system
-	   	 		if(itemTexts.indexOf(token)!=-1){
-	   	 			// Don't add, clear the input field
-	   	 			return null;
-	   	 		} else {
-	   	 			// Add it to JCR
-	   	 			$('#questionTagsForm #tags').val(token);
-	   	 			var tagId = addTag();
+
+	var request = $.ajax ({
+		url: "http://localhost:3000/getAllTags",
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("tags %o", data.length);
+		var items = [];
+		for(i=0;i<data.length;i++){
+			var item = {
+				id: data[i].key, 
+				text: data[i].value
+			};
+			items.push(item);
+		}
+		console.log("items %o", items.length);
+		$('#questionTags').selectivity({
+			items: items,
+			multiple: true,
+		   	placeholder: 'Tags',
+		   	createTokenItem: function(token){
+		   	 	console.log('create token item called %o',token);
+		   	 	$('.selectivity-multiple-input').val("");
+		   	 	var itemArray = $('#questionTags').selectivity('data');
+		   	 	// When there are no categories in the system
+		   	 	if(itemArray == ""){
+		   	 		console.log('added session cat if');
+		   	 		$('#questionTagsForm #tags').val(token);
+	   	 			var tagId = addTag(token);
 			   	 	var pluginItem = {
 						id: tagId,
 						text: token
@@ -203,30 +211,63 @@ function initializeSelectivityForQuestionTags(){
 					// Refresh the selectivty since new session category has been added to the system
 					initializeSelectivityForQuestionTags();
 					return pluginItem;
-	   	 		}
-	   	 	}
-	   	 	
-	   	}
-	});	
+		   	 	}
+		   	 	// Session categories are available : Some are already selected
+		   	 	else{
+		   	 		// Get the item text values from itemArray
+		   	 		var itemTexts = [];
+		   	 		for(i in itemArray){
+		   	 			itemTexts.push(itemArray[i].text);
+		   	 		}
+		   	 		// Check if the token is already selected/avaialble in the system
+		   	 		if(itemTexts.indexOf(token)!=-1){
+		   	 			// Don't add, clear the input field
+		   	 			return null;
+		   	 		} else {
+		   	 			// Add it to JCR
+		   	 			$('#questionTagsForm #tags').val(token);
+		   	 			var tagId = addTag();
+				   	 	var pluginItem = {
+							id: tagId,
+							text: token
+						};
+						// Refresh the selectivty since new session category has been added to the system
+						initializeSelectivityForQuestionTags();
+						return pluginItem;
+		   	 		}
+		   	 	}
+		   	 	
+		   	}
+		});
+	});
+		
 }
 
-function getTags(){
-	  var tags = [];
-	  for(var i=0; i<5; i++) {
-	    tag = new Object();
-	    tag.name = "tag" + i;
-	    tag.id = i;
-	    tags.push(tag);
-	  }
-	  return tags;
+function getTags() {
+	var request = $.ajax ({
+		url: "http://localhost:3000/getAllTags",
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("tags %o", data.length);
+		//constructSelectivityDataForTags(data);
+	    return data;
+	});	 
+	request.fail(function( jqXHR, textStatus ) {
+	  console.log("getting tags failed" + textStatus);
+	});
 }
 
 function constructSelectivityDataForTags(tags){
 	var pluginItems = [];
-	for(i=0;i<tags.length;i++){
+	for(i=0;i<5;i++){
 		var pluginItem = {
-			id: tags[i].id,
-			text: tags[i].name
+			id: i, 
+			text: "tags" + i
 		};
 		pluginItems.push(pluginItem);
 	}
@@ -234,34 +275,30 @@ function constructSelectivityDataForTags(tags){
 }
 
 /* Session categories */
-function addTag() {
-	  	var tagId = uniqueId();
-	  	/*// Set base path
-		var baseTestPath = "/event-data/sessioncategory/sessioncategory-nodes";
-		var testPath = baseTestPath + "/sessioncategory-" + sessionCategoryId;
-		var path = testPath + "/" + sessionCategoryId;
-		// Get the data from the form
-		var params = $('#sessioncategoryForm').serialize();
-		// Post the data to Sling JCR Repository
-		var request = $.ajax({
-		  url: path,
-		  method: "POST",
-		  data: params,
-		  headers:{
-		  	"Content-type":"application/x-www-form-urlencoded",
-		  	"Content-length":params.length,
-		  	"Connection":"close"
-		  }
-		});
- 
-		request.done(function( msg ) {
-			console.log('session category added');
-		});
-		 
-		request.fail(function( jqXHR, textStatus ) {
-		  window.location = "/index.html"; 
-		});*/
-		return tagId;
+function addTag(tagName) {
+  	var tagId = uniqueId();
+  	var data = new Object();
+  	data.tagId = tagId;
+  	data.type = "tag";
+  	data.tagName = tagName;
+
+  	var request = $.ajax({
+		url: "http://localhost:3000/createTag",
+		method: "POST",
+		data: JSON.stringify(data),
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Content-length":data.length,
+			"Connection":"close"
+		}
+	});
+	request.done(function(status) {
+		console.log("user created successfully %o", status);
+	});	 
+	request.fail(function( jqXHR, textStatus ) {
+	  console.log("user creation failed" + textStatus);
+	});
+	return tagId;
 }
 
 /* Generates Unique Id*/
