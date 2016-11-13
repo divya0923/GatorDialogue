@@ -98,7 +98,7 @@ var loadQuestionsTable = function(){
 	    	},
 	        { 
 		        "targets": [ 1 ],
-		        "render": function ( data, type, row ) {
+		        "render": function (data, type, row) {
 		    	    return data;
 		    	}
             }
