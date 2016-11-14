@@ -18,9 +18,10 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
+
 		CKEDITOR.replace('questionDesc');
         CKEDITOR.config.removePlugins = 'toolbar';
-        CKEDITOR.instances.questionDesc.readOnly(true);
         initializeSelectivityForSessionCategories();
 				$("input[name='addressText']").keyup(suggestLocation); 
 
@@ -52,7 +53,7 @@
 				    	<li role="presentation" class="dropdown">
 					    	<a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
 					      		<img src="/static/images/profile.jpg"> 
-					      		<span> dmahendran </span>
+					      		<span id="headerUserID"> </span>
 					      		<span class="caret"></span>
 					    	</a>
 						    <ul class="dropdown-menu" id="profileMenu">

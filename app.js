@@ -15,7 +15,7 @@ app.listen(3000, function(){
   console.log("Server listening on port 3000!");
 });
 
-
+// create new user
 app.post('/createUser', function (req, res) {
    if (req.method == 'POST') {
       
@@ -60,6 +60,7 @@ app.post('/createUser', function (req, res) {
     }
 });
 
+// authenticate user credentials
 app.post('/authenticateUser', function(req,res){
   var jsonString = '';
   req.on('data', function (data) {
@@ -93,6 +94,7 @@ app.post('/authenticateUser', function(req,res){
   });
 });
 
+// create tag for questions
 app.post("/createTag", function(req,res){
   var jsonString = '';
       req.on('data', function (data) {
@@ -100,19 +102,44 @@ app.post("/createTag", function(req,res){
       });      
       req.on('end', function () {
         postParam = JSON.parse(jsonString);
-        console.log("createTag postParam" + postParam);
         gatorDialogue.insert(postParam, function(err, body){
           // fail silently - no error messages to frontend 
         });
       });
 });
 
+// get all tags for questions
 app.get("/getAllTags", function(req,res){ 
   gatorDialogue.view('gatorDialogueDesignDoc', 'tagView', function(err, body) {
     if (!err) {
-      body.rows.forEach(function(doc) {
-        console.log(doc.value);
+      res.send(body.rows);
+    }
+    else {
+      console.log(err);
+    }
+  });
+});
+
+// post a new question 
+app.post("/postQuestion", function(req,res){
+  var jsonString = '';
+      req.on('data', function (data) {
+          jsonString += data;
+      });      
+      req.on('end', function () {
+        postParam = JSON.parse(jsonString);
+        gatorDialogue.insert(postParam, function(err, body){
+          var response = new Object();
+          response.isQuestionCreated = true;
+          res.send(response);
+        });
       });
+});
+
+// get all questions
+app.get("/getAllQuestions", function(req, res){
+  gatorDialogue.view('gatorDialogueDesignDoc', 'questionView', function(err, body) {
+    if (!err) {
       res.send(body.rows);
     }
     else {
@@ -122,7 +149,7 @@ app.get("/getAllTags", function(req,res){
 });
 
 app.get("/testView", function(req,res){
-  console.log("testView");
+  console.log("testView" + req.query.lojj);
   gatorDialogue.view('gatorDialogueDesignDoc', 'userView', { key: "user1" }, function(err, body) {
     if (!err) {
       body.rows.forEach(function(doc) {
