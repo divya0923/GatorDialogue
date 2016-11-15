@@ -13,7 +13,7 @@ function createUser(){
 	data.department = $('#department')[0].value;
 
     var request = $.ajax({
-		url: "http://localhost:3000/createUser",
+		url: serverUrl + "/createUser",
 		method: "POST",
 		data: JSON.stringify(data),
 		headers:{
@@ -102,6 +102,7 @@ var postQuestion = function(){
 		$("#questionForm")[0].reset();
 		$("#questionTags").selectivity('clear');
 		$("#successPlaceholder").removeClass("hide");
+		window.scrollTo(100,0);
 	});
 
 	request.fail(function(status){
@@ -171,7 +172,7 @@ var constructQuestionData = function(data){
 
 	// question markup for dataTable
 	var questionStr = '<div class="left pr20">' +
-		                    '<div class="quesTitle">' + data.title +'</div>'+
+		                    '<div class="quesTitle"><a class="link clblue" onclick=openQuestionView(' + data.questionId +')>' + data.title +'</a></div>'+
 		                    '<div class="post-taglist">' + tagStr + '</div>' + 
 		                    '</div>'+
 			    			'<div class="right action-links">' + 
@@ -191,59 +192,44 @@ var constructQuestionData = function(data){
 	return questionStr;
 }
 
-var populateQuestionsData = function(){
-	var questions = [];
-	var i = 0;
-	for(i=1; i < 10; i++) {
-		var questionArr = [];
-		var questionId = 14677887;
-		/* var questionStr = 
-	    			'<div class="right action-links">'+
-					'<div class="right">'+
-					'<a class="link clblue" onclick="editEvent('+ questionId +')" id="cancelDeleteSessionBtn"><i class="fa fa-pencil pr5"></i></a>'+
-					'</div>'+
-					'<div class="left pr20">'+
-					'<a class="link clblue" onclick="deleteEvent('+ questionId +')" id="deleteSessionBtn"><i class="fa fa-trash pr5"></i></a>'+
-					'</div></div>'+
-                    '<ul>'+ 
-                    '<li class="sessionName">'+ 'Test test stets ste ssj k dflfkldkf' +'</li>'+
-                    '<li class="sessionVenue">' + 'dfkdjfdflkldkflkd' + '</li>'+
-                        '</ul>'; */
-        var tagStr = '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ 'test' + '</a>';
-        tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ 'test' + '</a>';
-        tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ 'test' + '</a>';
+var constructAnswerData = function(data){
+	console.log("constructAnswerData %o", data);
 
-        var str = "test question";
+	// calculate time difference 
+	var timeStamp = getTimeDiff(new Date(data.timeStamp));
 
-        var questionStr = '<div class="left pr20">' +
-		                    '<div class="quesTitle">' + str +'</div>'+
-		                    '<div class="post-taglist">' + tagStr + '</div>' + 
+	// question markup for dataTable
+
+	var voteStr = '<div class="vote">'+
+	              '<a class="vote-up-off" onclick=updateAnswerVote('+ data.answerId + ',' + true +')>up vote</a>'+
+	              '<span id="votes" class="vote-count-post ">5</span>'+
+	              '<a class="vote-down-off" onclick=updateAnswerVote('+ data.answerId  + ',' + false +')>down vote</a></div>';
+
+	var answerStr = '<div class="left pr20 answerBlock">' + voteStr +
+
+		                    '<div class="answerText">' + data.answer +'</div>'+
 		                    '</div>'+
 			    			'<div class="right action-links">' + 
-			    			'<div class="post-signature owner" style="display:inline-block">' + 
+			    			'<div class="post-signature-answer owner" style="display:inline-block">' + 
 		                    '<div class="user-info ">' + 
 		                    '<div class="user-action-time">' + 
-		                    'asked <span title="2016-02-22 14:02:45Z" class="relativetime">15 mins ago</span>' + 
+		                    'answered <span title="2016-02-22 14:02:45Z" class="relativetime">'+ timeStamp + '</span>' + 
 		                    '</div>' + 
 		                    '<div class="user-gravatar32">' + 
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ 'dmahendran' +'</a>' +  
+		                    '<a href="#">'+ data.user +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
-        questionArr.push(questionId);
-		questionArr.push(questionStr);
-		questions.push(questionArr);
-	}
-	return questions;     
+	return answerStr;
 }
 
 function initializeSelectivityForQuestionTags(){
 
 	var request = $.ajax ({
-		url: "http://localhost:3000/getAllTags",
+		url: serverUrl + "/getAllTags",
 		method: "GET",
 		headers:{
 			"Content-type":"application/x-www-form-urlencoded",
@@ -309,13 +295,12 @@ function initializeSelectivityForQuestionTags(){
 		   	 	
 		   	}
 		});
-	});
-		
+	});	
 }
 
 function getTags() {
 	var request = $.ajax ({
-		url: "http://localhost:3000/getAllTags",
+		url: serverUrl + "/getAllTags",
 		method: "GET",
 		headers:{
 			"Content-type":"application/x-www-form-urlencoded",
@@ -344,7 +329,6 @@ function constructSelectivityDataForTags(tags){
 	return pluginItems;
 }
 
-/* Session categories */
 function addTag(tagName) {
   	var tagId = uniqueId();
   	var data = new Object();
@@ -403,4 +387,123 @@ function getTimeDiff(datetime){
     else 
     	dateStr = date_diff.getSeconds() + " seconds ago";
     return dateStr;
+}
+
+function openQuestionView(questionId){
+	localStorage.setItem("currentQuestionId", questionId);
+	window.location.href = "/static/design/questionView.html"
+}
+
+var loadQuestionData = function(){
+	var request = $.ajax ({
+		url: serverUrl + "/getQuestionData?questionId="+localStorage.getItem("currentQuestionId"),
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("current question", data);
+		$("#questionTitle").text(data.value.title);
+		$("#questionDesc").html(jQuery.parseHTML(data.value.question));
+
+		var tagStr = "";
+		for(var i=0; i< data.value.tags.length;i++){
+			tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.value.tags[i].text + '</a>';
+		}
+
+		$("#questionTags").html(tagStr);
+		$("#timeStamp").text(getTimeDiff(new Date(data.value.timeStamp)));
+		$("#userName").text(data.value.user);
+
+	});	 
+	request.fail(function( jqXHR, textStatus ) {
+	  console.log("getting tags failed" + textStatus);
+	});
+}
+
+var postAnswer = function(){
+	var data = new Object();
+	data.type = "answer";
+	data.answer = CKEDITOR.instances.questionAnswer.getData();
+	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;;
+	data.user = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	data.timeStamp = new Date();
+	data.questionId = localStorage.getItem("currentQuestionId");
+	data.answerId = uniqueId();
+	data.votes = 0;
+	var request = $.ajax({
+		url : serverUrl + "/postAnswer",
+		method: "POST",
+		data : JSON.stringify(data), 
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Content-length":data.length,
+			"Connection":"close"
+		}
+	});
+
+	request.done(function(status){
+		console.log("answer posted %o", status);
+		CKEDITOR.instances.questionAnswer.setData("");	
+		$("#successPlaceholder").removeClass("hide");
+		window.scrollTo(100,0);
+		loadAnswersTable();
+	});
+
+	request.fail(function(status){
+		console.log("answer post failed %o", status);
+		$("#errorPlaceholder").removeClass("hide");
+		window.scrollTo(100,0);
+	});
+}
+
+var loadAnswersTable = function(){
+	var request = $.ajax ({
+		url: serverUrl + "/getQuestionAnswers?questionId="+localStorage.getItem("currentQuestionId"),
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("questions %o", data);
+		var answers = [];
+		for (var i=0; i< data.length; i++){
+			var answerArr = [];
+			answerArr.push(data[i].value.answerId);
+			answerArr.push(constructAnswerData(data[i].value));
+			answers.push(answerArr);
+		}
+
+		$('#answersTableWrapper').empty()
+		$('#answersTableWrapper').append("<table class=\"display\" width=\"100%\" id=\"answersDTable\"></table>");
+		$('#answersDTable').DataTable({
+	    	"bLengthChange": false,
+	    	"pageLength": 10,
+	        data: answers, 
+	        columns: [
+	        	{ title : "answerId"}
+	        ],
+	        "columnDefs": [
+		        {
+			        "targets": [ 0 ],
+			        "visible": false,
+			        "searchable": false
+		    	},
+		        { 
+			        "targets": [ 1 ],
+			        "render": function (data, type, row) {
+			    	    return data;
+			    	}
+	            }
+	        ]
+	    });
+	});
+}
+
+var updateAnswerVote = function(answerId, isIncVote){
+	console.log(answerId, isIncVote);
 }

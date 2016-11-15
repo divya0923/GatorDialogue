@@ -136,9 +136,49 @@ app.post("/postQuestion", function(req,res){
       });
 });
 
+// post a new question 
+app.post("/postAnswer", function(req,res){
+  var jsonString = '';
+      req.on('data', function (data) {
+          jsonString += data;
+      });      
+      req.on('end', function () {
+        postParam = JSON.parse(jsonString);
+        gatorDialogue.insert(postParam, function(err, body){
+          var response = new Object();
+          response.isAnswerPosted = true;
+          res.send(response);
+        });
+      });
+});
+
 // get all questions
 app.get("/getAllQuestions", function(req, res){
   gatorDialogue.view('gatorDialogueDesignDoc', 'questionView', function(err, body) {
+    if (!err) {
+      res.send(body.rows);
+    }
+    else {
+      console.log(err);
+    }
+  });
+});
+
+// get data for a particular question
+app.get("/getQuestionData", function(req, res){
+  gatorDialogue.view('gatorDialogueDesignDoc', 'questionDataView', { key: parseInt(req.query.questionId) }, function(err, body) {
+    if (!err) {
+      res.send(body.rows[0]);
+    }
+    else {
+      console.log(err);
+    }
+  });
+});
+
+// get all answers of a question 
+app.get("/getQuestionAnswers", function(req, res){
+  gatorDialogue.view('gatorDialogueDesignDoc', 'answerView', { key: req.query.questionId }, function(err, body) {
     if (!err) {
       res.send(body.rows);
     }
@@ -159,17 +199,5 @@ app.get("/testView", function(req,res){
     else {
       console.log(err);
     }
-
-    /* var nano1 = require('nano')({url: 'http://localhost:5984', cookie: headers['set-cookie']});
-         nano1.session(function(err, session) {
-          if (err) {
-            return console.log('oh noes!' + err);
-          }
-          else{ 
-            response.isAuthenticated = true;
-            response.currentUser = session.userCtx.name;
-            res.send(response);
-          }
-        }); */
   });
 });
