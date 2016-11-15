@@ -188,16 +188,28 @@ app.get("/getQuestionAnswers", function(req, res){
   });
 });
 
-app.get("/testView", function(req,res){
-  console.log("testView" + req.query.lojj);
-  gatorDialogue.view('gatorDialogueDesignDoc', 'userView', { key: "user1" }, function(err, body) {
+app.get("/updateAnswerVotes", function(req, res){
+  console.log("query params: " + req.query.answerId, req.query.isIncVote)
+  gatorDialogue.view('gatorDialogueDesignDoc', 'answerDataView', { key: parseInt(req.query.answerId) }, function(err, body) {
     if (!err) {
-      body.rows.forEach(function(doc) {
-        console.log(doc.value);
+      console.log("%o", body);
+      var answer = body.rows[0].value;
+      if(req.query.isIncVote == "true")
+        answer.votes = answer.votes + 1;
+      else 
+        answer.votes = answer.votes - 1;
+      gatorDialogue.insert(answer, function(err1, body1){
+        console.log("%o", err1, body1);
+        var response = {"updatedVoteCount" : answer.votes}
+        res.send(response);
       });
     }
     else {
       console.log(err);
     }
   });
+});
+
+app.get("/testView", function(req,res){
+  console.log("testView" + req.query.lojj);
 });

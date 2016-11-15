@@ -202,7 +202,7 @@ var constructAnswerData = function(data){
 
 	var voteStr = '<div class="vote">'+
 	              '<a class="vote-up-off" onclick=updateAnswerVote('+ data.answerId + ',' + true +')>up vote</a>'+
-	              '<span id="votes" class="vote-count-post ">5</span>'+
+	              '<span id="votes'+ data.answerId+'" class="vote-count-post ">'+ data.votes +'</span>'+
 	              '<a class="vote-down-off" onclick=updateAnswerVote('+ data.answerId  + ',' + false +')>down vote</a></div>';
 
 	var answerStr = '<div class="left pr20 answerBlock">' + voteStr +
@@ -505,5 +505,16 @@ var loadAnswersTable = function(){
 }
 
 var updateAnswerVote = function(answerId, isIncVote){
-	console.log(answerId, isIncVote);
+	console.log("%o" , answerId, isIncVote);
+	var request = $.ajax ({
+		url: serverUrl + "/updateAnswerVotes?answerId=" + answerId + "&isIncVote=" + isIncVote,
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		$("#votes"+answerId).text(data.updatedVoteCount);
+	});
 }
