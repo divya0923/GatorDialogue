@@ -3,7 +3,7 @@ var app = express();
 
 // nano config 
 //var nano = require('nano')('http://127.0.0.1:5984/');
-var nano = require('nano')('https://couchdb-9ee129.smileupps.com');
+var nano = require('nano')('https://couchdb-d4dedc.smileupps.com');
 var user = nano.db.use('_users');
 var gatorDialogue = nano.db.use("gatordialogue");
 
@@ -319,6 +319,7 @@ app.get('/loadUserProfile', function(req,res){
 
 //get category vise number of questions for logged in user
 app.get('/loadQuestionData', function(req,res){
+
   console.log("loadQuestionData from couchdb  for user", req.query.loggedInUserId);
   nano.session(function(err, session) {
     if (err) {
@@ -334,7 +335,7 @@ app.get('/loadQuestionData', function(req,res){
   // var parms = { group_level=2, startkey=["STUDENT"], endkey=["STUDENT",{},{}]};
   
   var loggedInUserId=req.query.loggedInUserId;
-  //var loggedInUserId = 7743;
+  var loggedInUserId = 28470;
   var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
 
   gatorDialogue.view('gatorDialogueDesignDoc','totalQuestionsPieChart',params,function(err, body) {
