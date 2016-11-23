@@ -11,7 +11,8 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use('/scripts', express.static(__dirname + '/node_modules/bootstrap/dist/'));
 
 // open server 
-app.listen(3000, function(){
+var port = process.env.PORT || 3000;
+app.listen(port, function(){
   console.log("Server listening on port 3000!");
 });
 
