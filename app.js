@@ -2,7 +2,8 @@ var express = require('express');
 var app = express();
 
 // nano config 
-var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
+//var nano = require('nano')('http://127.0.0.1:5984/');
+var nano = require('nano')('https://couchdb-9ee129.smileupps.com');
 var user = nano.db.use('_users');
 var gatorDialogue = nano.db.use("gatordialogue");
 
@@ -267,3 +268,252 @@ var updateUserReputation = function (userId, points) {
     }
   });
 }
+
+
+//load the profile of logged in user
+app.get('/loadUserProfile', function(req,res){
+  console.log("loadUserProfile from couchdb for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) {
+      return console.log('Looks like we dont have your session');
+    }
+
+  //var loggedInUser = session.userCtx.name;
+  //var loggedInUserId = 'org.couchdb.user:user1';
+  //var profileInfo;
+  console.log('user is %s and has these roles: %j',
+      session.userCtx.name, session.userCtx.roles);
+
+  
+  //var loggedInUserId=req.query.loggedInUserId;
+  var loggedInUserId = 'org.couchdb.user:user1'
+  var params = {"group_level":"3","startkey":[loggedInUserId],"endkey":[loggedInUserId,{},{}]};
+
+  gatorDialogue.view('gatorDialogueDesignDoc','perUserQnA',params,function(err, body) {
+        if (err) { 
+            console.log("Querying profile failed");
+            res.end("Querying profile failed. " + err + "\n"); } 
+        else { 
+            items = [];
+            status= body.rows;
+            for(i=0;i<status.length;i++){
+              k = status[i].key;
+              var item = {
+                userid:k[0], 
+                doctype: k[1],
+                category: k[2],
+                count: status[i].value
+              };
+              items.push(item);
+            }
+            var data = new Object();
+            data.data = items;
+            console.log("%o", data);
+            res.send(JSON.stringify(data));
+  
+          }
+    })
+  });
+});
+
+
+//get category vise number of questions for logged in user
+app.get('/loadQuestionData', function(req,res){
+  console.log("loadQuestionData from couchdb  for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) {
+      return console.log('Looks like we dont have your session');
+    }
+
+  //var loggedInUser = session.userCtx.name;
+  //var loggedInUserId = 'user1';
+  //var profileInfo;
+  //console.log('user is %s and has these roles: %j',
+  //    session.userCtx.name, session.userCtx.roles);
+
+  // var parms = { group_level=2, startkey=["STUDENT"], endkey=["STUDENT",{},{}]};
+  
+  var loggedInUserId=req.query.loggedInUserId;
+  //var loggedInUserId = 7743;
+  var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
+
+  gatorDialogue.view('gatorDialogueDesignDoc','totalQuestionsPieChart',params,function(err, body) {
+    //{keys:[[loggedInUserId,{}]]}, function(err, body) {
+        if (err) { 
+            console.log("loadQuestionData failed");
+            res.end("loadQuestionData failed. " + err + "\n"); 
+          } 
+        else { 
+            console.log("inside loadQuestionData");
+            items = [['category','count']];
+            status= body.rows;
+            for(i=0;i<status.length;i++){
+              k = status[i].key;
+              var item = [
+                category= k[1],
+                count= status[i].value
+              ];
+              items.push(item);
+            }
+              console.log(items);
+              res.send(items);
+        }
+    })
+  });
+});
+
+
+
+
+//get category vise number of answers for logged in user
+app.get('/loadAnswerData', function(req,res){
+  console.log("loadAnswerData from couchdb  for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) {
+      return console.log('Looks like we dont have your session');
+    }
+
+  //var loggedInUser = session.userCtx.name;
+  //var loggedInUserId = 'user1';
+  //var profileInfo;
+  //console.log('user is %s and has these roles: %j',
+      //session.userCtx.name, session.userCtx.roles);
+
+  // var parms = { group_level=2, startkey=["STUDENT"], endkey=["STUDENT",{},{}]};
+  var loggedInUserId=req.query.loggedInUserId;
+  var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
+
+  gatorDialogue.view('gatorDialogueDesignDoc','totalAnswerPieChart',params,function(err, body) {
+         if (err) { 
+              console.log("loadAnswerData failed");
+            res.end("loadAnswerData failed. " + err + "\n"); 
+          } 
+        else { 
+            console.log("inside loadAnswerData");
+            items = [['category','count']];
+            status= body.rows;
+            for(i=0;i<status.length;i++){
+              k = status[i].key;
+              var item = [
+                category= k[1],
+                count= status[i].value
+              ];
+              items.push(item);
+            }
+              console.log(items);
+              res.send(items);
+          }
+    })
+  });
+});
+
+
+//get most recent questions asked by logged in user
+app.get('/recentQuestions', function(req,res){
+  console.log("recentQuestions from couchdb  for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) { 
+      return console.log('Looks like we dont have your session');
+    }
+
+  var loggedInUserId=req.query.loggedInUserId;
+  var params = {"startkey":[loggedInUserId, {}], "endkey":[loggedInUserId],"descending":true};
+  gatorDialogue.view('gatorDialogueDesignDoc','recentQuestions',params, function(err, body) {
+        if (err) { 
+              console.log("recentQuestions failed");
+            res.end("recentQuestions failed. " + err + "\n"); 
+          } 
+        else {
+            console.log("response %o" , body.rows);
+            res.send(body.rows);
+    }
+  })
+  });
+});
+
+
+//get most recent questions answered by logged in user
+app.get('/getQuestionIdsForRecentAnswers', function(req,res){
+  console.log("getQuestionIdsForRecentAnswers from couchdb  for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) {
+      return console.log('Looks like we dont have your session');
+    }
+
+ 
+  //var loggedInUserId=user1;
+  var loggedInUserId=req.query.loggedInUserId
+  var params = {"startkey":[loggedInUserId,{}], "endkey":[loggedInUserId],"descending":true};
+  gatorDialogue.view('gatorDialogueDesignDoc','getQuestionIdsForRecentAnswers',params,function(err, body) {
+          if (err) { 
+              console.log("getQuestionIdsForRecentAnswers failed");
+              res.end("getQuestionIdsForRecentAnswers failed. " + err + "\n"); 
+          } 
+          else {
+            console.log(body.rows);
+
+            questionIdsForRecentAnswers = [];
+            for(var i=0; i<body.rows.length; i++){
+                questionIdsForRecentAnswers.push(body.rows[i].value);
+                }
+
+
+            console.log("fetching questions now  ", questionIdsForRecentAnswers);
+            console.log("startkey",questionIdsForRecentAnswers[0]," ",questionIdsForRecentAnswers[questionIdsForRecentAnswers.length-1]);
+            date=[];
+            var params = {"keys":questionIdsForRecentAnswers}; 
+           
+            gatorDialogue.view('gatorDialogueDesignDoc','getQuestionsFromIds',params,function(err, body) {
+            
+              if (err) { 
+                  console.log("getQuestionsFromIds failed");
+                  res.end("getQuestionsFromIds failed. " + err + "\n"); 
+                } 
+              else {
+                  console.log(body.rows);
+                  res.send(body.rows);
+                  }
+
+                })
+    }
+  })
+  });
+});
+
+//leaderboard
+app.get('/leaderboard', function(req,res){
+  console.log("leaderboard from couchdb  for user", req.query.loggedInUserId);
+  nano.session(function(err, session) {
+    if (err) { 
+      return console.log('Looks like we dont have your session');
+    }
+
+  //var loggedInUserId = 'user1';
+  // var params = {"startkey":[loggedInUserId],"endkey":[loggedInUserId,{}], "descending":false};
+  //var loggedInUserId=req.query.loggedInUserId;
+  
+  //var params = {"startkey":[{},{}], "endkey":[loggedInUserId],"descending":true};
+  gatorDialogue.view('gatorDialogueDesignDoc','leaderboard',function(err, body) {
+        if (err) { 
+              console.log("leaderboard failed");
+            res.end("leaderboard failed. " + err + "\n"); 
+          }
+        else {
+            console.log(body.rows);
+            data=[];
+            status= body.rows;
+            for(var i=status.length-1; i>=0; i--){
+              k = status[i].key;
+              var item = [
+                Reputation= k[1],
+                Gator= k[0]
+                
+              ];
+              data.push(item);
+            }
+            console.log(data);
+            res.send(data);
+    }
+  })
+  });
+});

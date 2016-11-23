@@ -1,3 +1,4 @@
+//var serverUrl = "http://localhost:3000"
 var serverUrl = "https://gatordialogue.herokuapp.com"
 
 function createUser(){
@@ -5,7 +6,7 @@ function createUser(){
 	data._id = "org.couchdb.user:" + $('#username')[0].value;
 	data.name = $('#username')[0].value;
 	data.type = "user";
-	data.roles = ['student'];
+	data.roles = [];
 	data.password = $('#password')[0].value;
 	data.userId = uniqueId();
 	data.email = $('#email')[0].value;
@@ -556,4 +557,218 @@ var validateAnswer = function(answerId){
 var clearSession = function(){
 	localStorage.clear();
 	window.href = "/static/design/login.html"
+}
+
+var loadUserProfile = function(){
+	console.log("loadingUserProfile");
+	var username = JSON.parse(localStorage.getItem("loggedInUser"));
+	$('#userProfileWrapper').empty()
+	$('#userProfileWrapper').append("<table class=\"display\" width=\"100%\" id=\"profileInfoTable\"></table>");
+	$('#profileInfoTable').DataTable({
+    	"bLengthChange": false,
+    	"pageLength": 10,
+        "ajax":"http://localhost:3000/loadUserProfile?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+        	    
+   "columns":[
+ {   data : "userid"},
+   {   data :"doctype"},
+   {   data : "category"},
+   {   data : "count"},
+],
+
+
+
+       "columnDefs": [
+	      {
+        "targets": [ 0 ],	
+        "visible": false,
+        "searchable": false
+   	}]
+
+
+})
+}
+
+
+function drawChart() {
+	console.log("drawChart called");
+    var request = $.ajax({
+		url : "http://localhost:3000/loadQuestionData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+
+	request.done(function(status) {
+		console.log(status);
+		var data =	new google.visualization.arrayToDataTable(status);
+		console.log(data);
+        var options = {
+          title: 'Total Questions Posted'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+	});	
+}
+
+function drawChart1() {
+	console.log("drawChart1called");
+	var request = $.ajax({
+		url : "http://localhost:3000/loadAnswerData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		method: "GET",
+		headers:{
+		"Content-type":"application/x-www-form-urlencoded",
+		"Connection":"close"
+		}
+	});
+	request.done(function(status) {
+		console.log(status);
+		var data =	new google.visualization.arrayToDataTable(status);
+		console.log(data);
+	    var options = {
+	      title: 'Total Answers Posted'
+	    };
+
+	    var chart = new google.visualization.PieChart(document.getElementById('piechart1'));
+	    chart.draw(data, options);
+	});	
+}
+
+
+var loadRecentQuestionsTable = function(){
+	var request = $.ajax ({
+		url: serverUrl + "/recentQuestions?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("questions %o", data);
+		var questions = [];
+		for (var i=0; i< data.length; i++){
+			var questionArr = [];
+			var questionId = data[i].value.questionId;
+			questionArr.push(questionId);
+			questionArr.push(constructQuestionData(data[i].value));
+			questions.push(questionArr);
+		}
+
+		console.log("questions array %o", questions);
+		$('#userRecentQuestionsWrapper').empty()
+		$('#userRecentQuestionsWrapper').append("<table class=\"display\" width=\"100%\" id=\"recentQuestionsTable\"></table>");
+		$('#recentQuestionsTable').DataTable({
+	    	"bLengthChange": false,
+	    	"pageLength": 10,
+	        data: questions, 
+	        "aaSorting": [],
+	        columns: [
+	        	{ title : "QuestionId"}
+	        ],
+	        "columnDefs": [
+		        {
+			        "targets": [ 0 ],
+			        "visible": false,
+			        "searchable": false
+		    	},
+		        { 
+			        "targets": [ 1 ],
+			        "render": function (data, type, row) {
+			    	    return data;
+			    	}
+	            }
+	        ]
+	    });
+	});
+}
+
+
+
+var loadRecentAnswersTable = function(){
+	var request = $.ajax ({
+		url: serverUrl + "/getQuestionIdsForRecentAnswers?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function (data) {
+		console.log("questions %o", data);
+		var questions = [];
+		for (var i=0; i< data.length; i++){
+			var questionArr = [];
+			var questionId = data[i].value.questionId;
+			questionArr.push(questionId);
+			questionArr.push(constructQuestionData(data[i].value));
+			questions.push(questionArr);
+		}
+
+		console.log("questions array %o", questions);
+		$('#userRecentAnswersWrapper').empty()
+		$('#userRecentAnswersWrapper').append("<table class=\"display\" width=\"100%\" id=\"recentAnswersTable\"></table>");
+		$('#recentAnswersTable').DataTable({
+	    	"bLengthChange": false,
+	    	"pageLength": 10,
+	        data: questions, 
+	        "aaSorting": [],
+	        columns: [
+	        	{ title : "QuestionId"}
+	        ],
+	        "columnDefs": [
+		        {
+			        "targets": [ 0 ],
+			        "visible": false,
+			        "searchable": false
+		    	},
+		        { 
+			        "targets": [ 1 ],
+			        "render": function (data, type, row) {
+			    	    return data;
+			    	}
+	            }
+	        ]
+	    });
+	});
+}
+
+var loadLeaderBoard = function(){
+	console.log("loading leaderBoard");
+	var username = JSON.parse(localStorage.getItem("loggedInUser"));
+	
+	var request = $.ajax ({
+		url: serverUrl + "/leaderBoard",
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function (status) {
+		console.log(status);
+		$('#leaderBoardWrapper').empty()
+		$('#leaderBoardWrapper').append("<table class=\"display\" width=\"100%\" id=\"leaderBoardTable\"></table>");
+		$('#leaderBoardTable').DataTable({
+	    	"bLengthChange": false,
+	    	"pageLength": 10,
+	        "aaSorting":[],
+	        responsive: true,
+	        fixedHeader: true,
+	        data:status,
+	       columns: [
+		        	{ title : "Gator",
+		       }, {title: "Reputation"}
+		     ],   
+		    //"columns":[{"data":"user"},{"data":"reputation"}],
+		    "columnDefs": [
+	     	{
+			targets: '_all', visible: true 
+   			}]
+		});
+	});
 }
