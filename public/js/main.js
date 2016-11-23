@@ -1,4 +1,4 @@
-var serverUrl = "http://localhost:3000"
+var serverUrl = "https://gatordialogue.herokuapp.com"
 
 function createUser(){
 	var data = new Object();
