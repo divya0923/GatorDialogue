@@ -15,6 +15,13 @@ app.listen(3000, function(){
   console.log("Server listening on port 3000!");
 });
 
+//constants
+var questionPoints = 1;
+var answerPoints = 5;
+var profValidationPoints = 10;
+var upvotePoints = 2;
+var downvotePoints = -2;
+
 // create new user
 app.post('/createUser', function (req, res) {
    if (req.method == 'POST') {
@@ -129,6 +136,7 @@ app.post("/postQuestion", function(req,res){
       req.on('end', function () {
         postParam = JSON.parse(jsonString);
         gatorDialogue.insert(postParam, function(err, body){
+          updateUserReputation(postParam.user, questionPoints);
           var response = new Object();
           response.isQuestionCreated = true;
           res.send(response);
@@ -145,6 +153,7 @@ app.post("/postAnswer", function(req,res){
       req.on('end', function () {
         postParam = JSON.parse(jsonString);
         gatorDialogue.insert(postParam, function(err, body){
+          updateUserReputation(postParam.user, answerPoints);
           var response = new Object();
           response.isAnswerPosted = true;
           res.send(response);
@@ -194,10 +203,16 @@ app.get("/updateAnswerVotes", function(req, res){
     if (!err) {
       console.log("%o", body);
       var answer = body.rows[0].value;
-      if(req.query.isIncVote == "true")
+      if(req.query.isIncVote == "true"){
+        updateUserReputation(req.query.userId, upvotePoints);
         answer.votes = answer.votes + 1;
-      else 
+      }
+       
+      else {
+        updateUserReputation(req.query.userId, downvotePoints);
         answer.votes = answer.votes - 1;
+      }
+        
       gatorDialogue.insert(answer, function(err1, body1){
         console.log("%o", err1, body1);
         var response = {"updatedVoteCount" : answer.votes}
@@ -210,6 +225,44 @@ app.get("/updateAnswerVotes", function(req, res){
   });
 });
 
+app.get("/validateAnswer", function(req, res){
+  console.log("query params: " + req.query.answerId, req.query.validatedBy, req.query.userId);
+  gatorDialogue.view('gatorDialogueDesignDoc', 'answerDataView', { key: parseInt(req.query.answerId) }, function(err, body) {
+    if (!err) {
+      console.log("%o", body);
+      var answer = body.rows[0].value;
+      answer.isValidated = true;
+      answer.validatedBy = req.query.validatedBy;
+      gatorDialogue.insert(answer, function(err1, body1){
+        updateUserReputation(req.query.userId, profValidationPoints);
+        console.log("%o", err1, body1);
+        var response = {"isValidated" : true}
+        res.send(response);
+      });
+    }
+    else {
+      console.log(err);
+    }
+  });
+});
+
 app.get("/testView", function(req,res){
   console.log("testView" + req.query.lojj);
 });
+
+var updateUserReputation = function (userId, points) {
+  console.log("updateUserReputation %o", userId , points );
+  gatorDialogue.view('gatorDialogueDesignDoc', 'userView', { key: userId }, function(err, body) {
+    if (!err) {
+      console.log("%o", body);
+      var user = body.rows[0].value;
+      user.reputation += points;
+      gatorDialogue.insert(user, function(err, body){
+        console.log("user reputation update status %o", err, body);
+      });
+    }
+    else {
+      console.log(err);
+    }
+  });
+}

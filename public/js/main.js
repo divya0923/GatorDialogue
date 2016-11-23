@@ -5,13 +5,13 @@ function createUser(){
 	data._id = "org.couchdb.user:" + $('#username')[0].value;
 	data.name = $('#username')[0].value;
 	data.type = "user";
-	data.roles = [];
+	data.roles = ['student'];
 	data.password = $('#password')[0].value;
 	data.userId = uniqueId();
 	data.email = $('#email')[0].value;
 	data.displayName = $('#fname')[0].value;
 	data.department = $('#department')[0].value;
-
+	data.reputation = 0;
     var request = $.ajax({
 		url: serverUrl + "/createUser",
 		method: "POST",
@@ -62,6 +62,10 @@ var authenticateUser = function(){
     request.done(function(status) {
 		console.log("logged in successfully %o", status.currentUser);
 		if(status.isAuthenticated){
+			if($.inArray("professor", status.currentUser.roles) != -1)
+				localStorage.setItem("isProfessor", true);
+			else
+				localStorage.setItem("isProfessor", false);
 			localStorage.setItem("loggedInUser", JSON.stringify(status.currentUser));
 			window.location.href = "/static/design/home.html";
 		}
@@ -81,8 +85,9 @@ var postQuestion = function(){
 	data.tags = $("#questionTags").selectivity('data');
 	data.type = "question";
 	data.question = CKEDITOR.instances.questionDesc.getData();
-	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;;
-	data.user = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;
+	data.user = JSON.parse(localStorage.getItem("loggedInUser")).name;
+	data.displayName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
 	data.timeStamp = new Date();
 	data.questionId = uniqueId();
 	var request = $.ajax({
@@ -185,7 +190,7 @@ var constructQuestionData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.user +'</a>' +  
+		                    '<a href="#">'+ data.displayName +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
@@ -199,11 +204,18 @@ var constructAnswerData = function(data){
 	var timeStamp = getTimeDiff(new Date(data.timeStamp));
 
 	// question markup for dataTable
-
+	var validateStr = "";
+	if(data.isValidated)
+		validateStr = '<a class="star-on" title="validated byProf. '+ data.validatedBy +'"></a>';
+	else if(localStorage.getItem("isProfessor") == "true"){
+			validateStr = '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="star-off" title="Click here to validate this answer" onclick=validateAnswer('+ data.answerId +')></a>';
+	}
+		
 	var voteStr = '<div class="vote">'+
-	              '<a class="vote-up-off" onclick=updateAnswerVote('+ data.answerId + ',' + true +')>up vote</a>'+
+	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-up-off" onclick=updateAnswerVote('+ data.answerId + ',' + true + ')>up vote</a>'+
 	              '<span id="votes'+ data.answerId+'" class="vote-count-post ">'+ data.votes +'</span>'+
-	              '<a class="vote-down-off" onclick=updateAnswerVote('+ data.answerId  + ',' + false +')>down vote</a></div>';
+	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-down-off" onclick=updateAnswerVote('+ data.answerId  + ',' + false +')>down vote</a>'+
+	               validateStr + '</div>';
 
 	var answerStr = '<div class="left pr20 answerBlock">' + voteStr +
 
@@ -219,7 +231,7 @@ var constructAnswerData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.user +'</a>' +  
+		                    '<a href="#">'+ data.displayName +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
@@ -415,7 +427,7 @@ var loadQuestionData = function(){
 
 		$("#questionTags").html(tagStr);
 		$("#timeStamp").text(getTimeDiff(new Date(data.value.timeStamp)));
-		$("#userName").text(data.value.user);
+		$("#userName").text(data.value.displayName);
 
 	});	 
 	request.fail(function( jqXHR, textStatus ) {
@@ -428,11 +440,14 @@ var postAnswer = function(){
 	data.type = "answer";
 	data.answer = CKEDITOR.instances.questionAnswer.getData();
 	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;;
-	data.user = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	data.user = JSON.parse(localStorage.getItem("loggedInUser")).name;
+	data.displayName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
 	data.timeStamp = new Date();
 	data.questionId = localStorage.getItem("currentQuestionId");
 	data.answerId = uniqueId();
 	data.votes = 0;
+	data.isValidated = false;
+	data.validatedBy = "";
 	var request = $.ajax({
 		url : serverUrl + "/postAnswer",
 		method: "POST",
@@ -506,8 +521,9 @@ var loadAnswersTable = function(){
 
 var updateAnswerVote = function(answerId, isIncVote){
 	console.log("%o" , answerId, isIncVote);
+	var userId = $('#' + answerId).attr('userid');
 	var request = $.ajax ({
-		url: serverUrl + "/updateAnswerVotes?answerId=" + answerId + "&isIncVote=" + isIncVote,
+		url: serverUrl + "/updateAnswerVotes?answerId=" + answerId + "&isIncVote=" + isIncVote + "&userId="  + userId,
 		method: "GET",
 		headers:{
 			"Content-type":"application/x-www-form-urlencoded",
@@ -517,4 +533,27 @@ var updateAnswerVote = function(answerId, isIncVote){
 	request.done(function(data) {
 		$("#votes"+answerId).text(data.updatedVoteCount);
 	});
+}
+
+var validateAnswer = function(answerId){
+	console.log("%o", answerId, $("#" + answerId));
+	var userId = $('#' + answerId).attr('userid');
+	var profName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	var request = $.ajax ({
+		url: serverUrl + "/validateAnswer?answerId=" + answerId + "&validatedBy=" + profName + "&userId="  + userId,
+		method: "GET",
+		headers:{
+			"Content-type":"application/x-www-form-urlencoded",
+			"Connection":"close"
+		}
+	});
+	request.done(function(data) {
+		console.log("%o", data);
+		loadAnswersTable();
+	});
+}
+
+var clearSession = function(){
+	localStorage.clear();
+	window.href = "/static/design/login.html"
 }
