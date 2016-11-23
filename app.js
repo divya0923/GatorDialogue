@@ -334,8 +334,8 @@ app.get('/loadQuestionData', function(req,res){
 
   // var parms = { group_level=2, startkey=["STUDENT"], endkey=["STUDENT",{},{}]};
   
-  var loggedInUserId=req.query.loggedInUserId;
-  var loggedInUserId = 28470;
+  var loggedInUserId=parseInt(req.query.loggedInUserId);
+  //var loggedInUserId = 28470;
   var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
 
   gatorDialogue.view('gatorDialogueDesignDoc','totalQuestionsPieChart',params,function(err, body) {
