@@ -417,6 +417,7 @@ function getTimeDiff(datetime){
     var days = Math.floor(milisec_diff / 1000 / 60 / (60 * 24));
     var date_diff = new Date( milisec_diff );
     var dateStr = "";
+
     if (days > 0)
     	dateStr = days + " days ago";
     else if (date_diff.getHours() > 0)
