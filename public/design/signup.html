@@ -16,6 +16,8 @@
 <link rel="stylesheet" href="/static/css/style.css"/>
 <script type="text/javascript" src="/static/js/main.js"></script>
 <link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
+<script src="../lib/jquery.form-validator.min.js"></script>
+
 
 <script>
 $(document).ready(function(){
@@ -45,19 +47,19 @@ $(document).ready(function(){
 						</div>
 
 						<div class="form-group">
-		                    <input type="text" name="fullName" id="fname" class="form-control input-lg" placeholder="Full Name">
+		                    <input type="text" name="fullName" id="fname" class="form-control input-lg" placeholder="Full Name" data-validation="required">
 						</div>
 						<div class="form-group">
-		                    <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address">
+		                    <input type="email" name="email" id="email" class="form-control input-lg" placeholder="Email Address" data-validation="required">
 						</div>
 						<div class="form-group">
-		                    <input type="text" name="department" id="department" class="form-control input-lg" placeholder="Department">
+		                    <input type="text" name="department" id="department" class="form-control input-lg" placeholder="Department" data-validation="required">
 						</div>
 						<div class="form-group">
-		                    <input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username">
+		                    <input type="text" name="username" id="username" class="form-control input-lg" placeholder="Username" data-validation="required">
 						</div>
 						<div class="form-group">
-		                    <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
+		                    <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" data-validation="required">
 						</div>
 						<div class="row">
 							<div class="col-xs-6 col-sm-6 col-md-6">

@@ -1,5 +1,5 @@
-var serverUrl = "http://localhost:3000"
-//var serverUrl = "https://gatordialogue.herokuapp.com"
+//var serverUrl = "http://localhost:3000"
+var serverUrl = "https://gatordialogue.herokuapp.com"
 
 function createUser(){
 	var data = new Object();
@@ -13,36 +13,45 @@ function createUser(){
 	data.displayName = $('#fname')[0].value;
 	data.department = $('#department')[0].value;
 	data.reputation = 0;
-    var request = $.ajax({
-		url: serverUrl + "/createUser",
-		method: "POST",
-		data: JSON.stringify(data),
-		headers:{
-			"Content-type":"application/x-www-form-urlencoded",
-			"Content-length":data.length,
-			"Connection":"close"
-		}
-	});
 
-	request.done(function(status) {
-		console.log("user created successfully %o", status);
-		$('.signupForm')[0].reset();
-		if(status.isUserCreated){
-			$("#successPlaceholder").removeClass("hide");
-			$("#errorPlaceholder").addClass("hide");
-		}		
-		else {
-			if(status.isDuplicateUser)
-				$('#errorPlaceholder .errorText').html("Username is already in use. Choose a different one!");
-			$("#errorPlaceholder").removeClass("hide");
-			$("#successPlaceholder").addClass("hide");
-		}
-			
-	});	 
-	request.fail(function( jqXHR, textStatus ) {
-	  console.log("user creation failed" + textStatus );
-	  $('#errorPlaceholder').removeClass("hide");
-	});
+	if(data.name != "" && data.password != "" && data.email != "" && data.displayName != "" && data.department != "") {
+	    var request = $.ajax({
+			url: serverUrl + "/createUser",
+			method: "POST",
+			data: JSON.stringify(data),
+			headers:{
+				"Content-type":"application/x-www-form-urlencoded",
+				"Content-length":data.length,
+				"Connection":"close"
+			}
+		});
+
+		request.done(function(status) {
+			console.log("user created successfully %o", status);
+			$('.signupForm')[0].reset();
+			if(status.isUserCreated){
+				$("#successPlaceholder").removeClass("hide");
+				$("#errorPlaceholder").addClass("hide");
+			}		
+			else {
+				if(status.isDuplicateUser)
+					$('#errorPlaceholder .errorText').html("Username is already in use. Choose a different one!");
+				$("#errorPlaceholder").removeClass("hide");
+				$("#successPlaceholder").addClass("hide");
+			}
+				
+		});	 
+		request.fail(function( jqXHR, textStatus ) {
+		  console.log("user creation failed" + textStatus );
+		  $('#errorPlaceholder').removeClass("hide");
+		});
+	}
+	else {
+		$('#errorPlaceholder .errorText').html("All fields are mandatory. Please fill all the fields to proceed.");
+		$("#errorPlaceholder").removeClass("hide");
+		$("#successPlaceholder").addClass("hide");
+	}
+	
 };
 
 var authenticateUser = function(){
@@ -50,33 +59,41 @@ var authenticateUser = function(){
     data.username = $('#username')[0].value;
     data.password = $('#password')[0].value;
 
-    var request = $.ajax({
-    	url : serverUrl + "/authenticateUser",
-    	method: "POST",
-    	data : JSON.stringify(data),
-    	headers:{
-			"Content-type":"application/x-www-form-urlencoded",
-			"Content-length":data.length,
-			"Connection":"close"
-		}
-    });
-    request.done(function(status) {
-		console.log("logged in successfully %o", status.currentUser);
-		if(status.isAuthenticated){
-			if($.inArray("professor", status.currentUser.roles) != -1)
-				localStorage.setItem("isProfessor", true);
-			else
-				localStorage.setItem("isProfessor", false);
-			localStorage.setItem("loggedInUser", JSON.stringify(status.currentUser));
-			window.location.href = "/static/design/home.html";
-		}
-		else {
-			$('#errorPlaceholder').removeClass("hide");
-		}
-	});	 
-	request.fail(function( jqXHR, textStatus ) {
-	  console.log( "login failed: " + textStatus );
-	});
+    if(data.username != "" && data.password != ""){
+    	var request = $.ajax({
+    		url : serverUrl + "/authenticateUser",
+	    	method: "POST",
+	    	data : JSON.stringify(data),
+	    	headers:{
+				"Content-type":"application/x-www-form-urlencoded",
+				"Content-length":data.length,
+				"Connection":"close"
+			}
+    	});
+	    request.done(function(status) {
+			console.log("logged in successfully %o", status.currentUser);
+			if(status.isAuthenticated){
+				if($.inArray("professor", status.currentUser.roles) != -1)
+					localStorage.setItem("isProfessor", true);
+				else
+					localStorage.setItem("isProfessor", false);
+				localStorage.setItem("loggedInUser", JSON.stringify(status.currentUser));
+				window.location.href = "/static/design/home.html";
+			}
+			else {
+				$('#errorPlaceholder').removeClass("hide");
+			}
+		});	 
+		request.fail(function( jqXHR, textStatus ) {
+		  console.log( "login failed: " + textStatus );
+		});
+    }
+    else{
+    	$('#errorPlaceholder .errorText').html("All fields are mandatory. Please fill all the fields to proceed.");
+		$("#errorPlaceholder").removeClass("hide");
+		$("#successPlaceholder").addClass("hide");
+    }
+    
 };
 
 var postQuestion = function(){
@@ -91,29 +108,38 @@ var postQuestion = function(){
 	data.displayName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
 	data.timeStamp = new Date();
 	data.questionId = uniqueId();
-	var request = $.ajax({
-		url : serverUrl + "/postQuestion",
-		method: "POST",
-		data : JSON.stringify(data), 
-		headers:{
-			"Content-type":"application/x-www-form-urlencoded",
-			"Content-length":data.length,
-			"Connection":"close"
-		}
-	});
 
-	request.done(function(status){
-		console.log("question posted %o", status);
-		CKEDITOR.instances.questionDesc.setData("");
-		$("#questionForm")[0].reset();
-		$("#questionTags").selectivity('clear');
-		$("#successPlaceholder").removeClass("hide");
-		window.scrollTo(100,0);
-	});
+	if(data.title != "" && data.tags != "" && data.category != "" && data.question != ""){
+		var request = $.ajax({
+			url : serverUrl + "/postQuestion",
+			method: "POST",
+			data : JSON.stringify(data), 
+			headers:{
+				"Content-type":"application/x-www-form-urlencoded",
+				"Content-length":data.length,
+				"Connection":"close"
+			}
+		});
 
-	request.fail(function(status){
-		console.log("question post failed %o", status);
-	});
+		request.done(function(status){
+			console.log("question posted %o", status);
+			CKEDITOR.instances.questionDesc.setData("");
+			$("#questionForm")[0].reset();
+			$("#questionTags").selectivity('clear');
+			$("#successPlaceholder").removeClass("hide");
+			window.scrollTo(100,0);
+		});
+
+		request.fail(function(status){
+			console.log("question post failed %o", status);
+		});
+	}
+	else {
+		$('#errorPlaceholder .errorText').html("All fields are mandatory. Please fill all the fields to proceed.");
+		$("#errorPlaceholder").removeClass("hide");
+		$("#successPlaceholder").addClass("hide");
+	}
+	
 }
 
 var loadQuestionsTable = function(){
@@ -449,30 +475,38 @@ var postAnswer = function(){
 	data.votes = 0;
 	data.isValidated = false;
 	data.validatedBy = "";
-	var request = $.ajax({
-		url : serverUrl + "/postAnswer",
-		method: "POST",
-		data : JSON.stringify(data), 
-		headers:{
-			"Content-type":"application/x-www-form-urlencoded",
-			"Content-length":data.length,
-			"Connection":"close"
-		}
-	});
+	if(data.answer != ""){
+		var request = $.ajax({
+			url : serverUrl + "/postAnswer",
+			method: "POST",
+			data : JSON.stringify(data), 
+			headers:{
+				"Content-type":"application/x-www-form-urlencoded",
+				"Content-length":data.length,
+				"Connection":"close"
+			}
+		});
 
-	request.done(function(status){
-		console.log("answer posted %o", status);
-		CKEDITOR.instances.questionAnswer.setData("");	
-		$("#successPlaceholder").removeClass("hide");
-		window.scrollTo(100,0);
-		loadAnswersTable();
-	});
+		request.done(function(status){
+			console.log("answer posted %o", status);
+			CKEDITOR.instances.questionAnswer.setData("");	
+			$("#successPlaceholder").removeClass("hide");
+			window.scrollTo(100,0);
+			loadAnswersTable();
+		});
 
-	request.fail(function(status){
-		console.log("answer post failed %o", status);
+		request.fail(function(status){
+			console.log("answer post failed %o", status);
+			$("#errorPlaceholder").removeClass("hide");
+			window.scrollTo(100,0);
+		});
+	}
+	else {
+		$('#errorPlaceholder .errorText').html("Please fill the answer field to proceed.");
 		$("#errorPlaceholder").removeClass("hide");
-		window.scrollTo(100,0);
-	});
+		$("#successPlaceholder").addClass("hide");
+	}
+
 }
 
 var loadAnswersTable = function(){
@@ -606,7 +640,11 @@ function drawChart() {
 		var data =	new google.visualization.arrayToDataTable(status);
 		console.log(data);
         var options = {
-          title: 'Total Questions Posted'
+          title: 'Total Questions Posted',
+          'width': 800,
+          'height': 800,
+          'legend':'left',
+          'is3D' : true
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -630,7 +668,11 @@ function drawChart1() {
 		var data =	new google.visualization.arrayToDataTable(status);
 		console.log(data);
 	    var options = {
-	      title: 'Total Answers Posted'
+	    	title: 'Total Answers Posted',
+	    	'width': 800,
+        	'height': 800,
+        	'legend':'left',
+          	'is3D' : true
 	    };
 
 	    var chart = new google.visualization.PieChart(document.getElementById('piechart1'));

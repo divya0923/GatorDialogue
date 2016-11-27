@@ -2,8 +2,8 @@ var express = require('express');
 var app = express();
 
 // nano config 
-var nano = require('nano')('http://127.0.0.1:5984/');
-//var nano = require('nano')('https://couchdb-d4dedc.smileupps.com');
+//var nano = require('nano')('http://127.0.0.1:5984/');
+var nano = require('nano')('https://couchdb-d4dedc.smileupps.com');
 var user = nano.db.use('_users');
 var gatorDialogue = nano.db.use("gatordialogue");
 

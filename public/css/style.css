@@ -380,6 +380,10 @@ border-radius: 3px;
     line-height: 24px;
     font-weight: 400;
 }
+
+input[type=text]{
+    width: 100%; 
+}
 .required{
 color: red;
 }
@@ -1098,5 +1102,15 @@ textarea.error{
 
 .dropdown-menu li {
     cursor : pointer;
+}
+
+.project-box{
+    margin-top: 100px;
+    margin-right: -23px;
+}
+
+.chart {
+        margin-top: -21px;
+        margin-left: -170px;
 }
 
