@@ -18,7 +18,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
-		 CKEDITOR.replace('questionAnswer');
+		validateSession();
+		CKEDITOR.replace('questionAnswer');
 		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
 		loadQuestionData();
 		loadAnswersTable();

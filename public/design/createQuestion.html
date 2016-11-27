@@ -20,6 +20,8 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){
+		validateSession();
+
 		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
 
         CKEDITOR.replace('questionDesc');

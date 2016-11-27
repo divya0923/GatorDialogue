@@ -18,6 +18,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		// load userName
+		validateSession();
 		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
 		loadQuestionsTable();
 	});

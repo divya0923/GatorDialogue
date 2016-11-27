@@ -24,6 +24,10 @@ var profValidationPoints = 10;
 var upvotePoints = 2;
 var downvotePoints = -2;
 
+app.get("/", function(req, res){
+  res.redirect('/static/design/login.html');
+});
+
 // create new user
 app.post('/createUser', function (req, res) {
    if (req.method == 'POST') {

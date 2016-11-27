@@ -817,9 +817,15 @@ var loadLeaderBoard = function(){
 }
 
 var goToLeaderBoard = function(){
-	window.location.href = "/static/design/leaderBoard.html"
+	window.location.href = "/static/design/leaderBoard.html";
 }
 
 var goToProfile = function(){
-	window.location.href = "/static/design/myProfile.html"
+	window.location.href = "/static/design/myProfile.html";
+}
+
+var validateSession = function(){
+	if(localStorage.getItem("loggedInUser") == "" || localStorage.getItem("loggedInUser") == null){
+		window.location.href = "/static/design/login.html"	
+	}
 }
