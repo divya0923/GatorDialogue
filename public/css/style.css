@@ -1114,3 +1114,7 @@ textarea.error{
         margin-left: -170px;
 }
 
+.user-details a{
+    font-size: 12px;
+    margin-top: 7px;
+}
