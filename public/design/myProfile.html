@@ -19,54 +19,61 @@
 <script src="/scripts/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <link rel="stylesheet" href="/static/css/userProfilePage.css"/>
+<link rel="stylesheet" href="/static/css/style.css"/>
 
 <script type="text/javascript">
     $(document).ready(function(){
         // load userName
+        $("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
         $("#firstNameID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
         $("#departmentID").text(JSON.parse(localStorage.getItem("loggedInUser")).department);
-        //$("#locationID").text(JSON.parse(localStorage.getItem("loggedInUser")).location);
-
-
-       // $("#firstNameID").text("Atharva");
-       // $("#lastNameID").text("Borkar");
-    });
-
-
-    $(document).ready(function(){
-        //loadUserProfile();
         loadRecentQuestionsTable();
-    });
-
-
-   $(document).ready(function(){
-    //  google.load('visualization', '1', {'packages':['corechart']});
+        loadRecentAnswersTable();
         google.charts.load('current', {'packages':['corechart']});  
         google.charts.setOnLoadCallback(drawChart);
-    //  drawChart();
-    });
-    
-    $(document).ready(function(){
-    //  google.load('visualization', '1', {'packages':['corechart']});
         google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(drawChart1);
-    //  drawChart1();
+        $(".btn-pref .btn").click(function () {
+            $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
+            // $(".tab").addClass("active"); // instead of this do the below 
+            $(this).removeClass("btn-default").addClass("btn-primary");   
+        });
     });
-
-    $(document).ready(function() {
-    $(".btn-pref .btn").click(function () {
-        $(".btn-pref .btn").removeClass("btn-primary").addClass("btn-default");
-        // $(".tab").addClass("active"); // instead of this do the below 
-        $(this).removeClass("btn-default").addClass("btn-primary");   
-    });
-    });
-
-
 </script>
-
 </head>
 <body>
 
+    <header>
+        <div class="container">
+            <nav class="navbar fs20" role="navigation">
+                <div class="left mt15 logo">
+                    <a href="/static/design/home.html" class="logo"><img src="/static/images/logo.png"></a>
+                </div>
+                <div class="right mt15">
+                    <span class="leaderBoard">              
+                    </span> 
+                    <ul class="nav nav-pills"> 
+                        <li class="mt15 leaderBoardLink" onclick="goToLeaderBoard()">
+                            <i class="fa fa-trophy fa-lg" aria-hidden="true"></i> Leaderboard       
+                        </li>
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                <img src="/static/images/profile.jpg"> 
+                                <span id="headerUserID">  </span>
+                                <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" id="profileMenu">
+                              <li onclick="goToProfile()"> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
+                              <li> <i class="fa fa-cog fa-lg" aria-hidden="true"></i> Settings </li>
+                              <li onclick="clearSession()"> <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i> Logout </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <hr class="colorgraph headergraph">
  
 <div class="col-lg-6 col-sm-6" style="width:100%">
     <div class="card hovercard">

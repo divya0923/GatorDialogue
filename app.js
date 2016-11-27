@@ -2,8 +2,8 @@ var express = require('express');
 var app = express();
 
 // nano config 
-//var nano = require('nano')('http://127.0.0.1:5984/');
-var nano = require('nano')('https://couchdb-d4dedc.smileupps.com');
+var nano = require('nano')('http://127.0.0.1:5984/');
+//var nano = require('nano')('https://couchdb-d4dedc.smileupps.com');
 var user = nano.db.use('_users');
 var gatorDialogue = nano.db.use("gatordialogue");
 
@@ -41,6 +41,7 @@ app.post('/createUser', function (req, res) {
           var msg = new Object();
           // users table insert successfull 
           if (!err){
+            delete postParam.password;
             gatorDialogue.insert(postParam, function(err1, body1) {
               // gatordialogue table insert successfull 
               if(!err1){
@@ -289,7 +290,7 @@ app.get('/loadUserProfile', function(req,res){
   var loggedInUserId = 'org.couchdb.user:user1'
   var params = {"group_level":"3","startkey":[loggedInUserId],"endkey":[loggedInUserId,{},{}]};
 
-  gatorDialogue.view('gatorDialogueDesignDoc','perUserQnA',params,function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc','perUserQnA',{"group_level":"3","startkey":[loggedInUserId],"endkey":[loggedInUserId,{},{}]},function(err, body) {
         if (err) { 
             console.log("Querying profile failed");
             res.end("Querying profile failed. " + err + "\n"); } 
@@ -338,7 +339,7 @@ app.get('/loadQuestionData', function(req,res){
   //var loggedInUserId = 28470;
   var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
 
-  gatorDialogue.view('gatorDialogueDesignDoc','totalQuestionsPieChart',params,function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc','totalQuestionsPieChart',{"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]},function(err, body) {
     //{keys:[[loggedInUserId,{}]]}, function(err, body) {
         if (err) { 
             console.log("loadQuestionData failed");
@@ -381,10 +382,10 @@ app.get('/loadAnswerData', function(req,res){
       //session.userCtx.name, session.userCtx.roles);
 
   // var parms = { group_level=2, startkey=["STUDENT"], endkey=["STUDENT",{},{}]};
-  var loggedInUserId=req.query.loggedInUserId;
+  var loggedInUserId=parseInt(req.query.loggedInUserId);
   var params = {"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]};
 
-  gatorDialogue.view('gatorDialogueDesignDoc','totalAnswerPieChart',params,function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc','totalAnswerPieChart',{"group_level":"2","startkey":[loggedInUserId],"endkey":[loggedInUserId,{}]},function(err, body) {
          if (err) { 
               console.log("loadAnswerData failed");
             res.end("loadAnswerData failed. " + err + "\n"); 
@@ -417,9 +418,9 @@ app.get('/recentQuestions', function(req,res){
       return console.log('Looks like we dont have your session');
     }
 
-  var loggedInUserId=req.query.loggedInUserId;
+  var loggedInUserId=parseInt(req.query.loggedInUserId);
   var params = {"startkey":[loggedInUserId, {}], "endkey":[loggedInUserId],"descending":true};
-  gatorDialogue.view('gatorDialogueDesignDoc','recentQuestions',params, function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc','recentQuestions',{"startkey":[loggedInUserId, {}], "endkey":[loggedInUserId],"descending":true}, function(err, body) {
         if (err) { 
               console.log("recentQuestions failed");
             res.end("recentQuestions failed. " + err + "\n"); 
@@ -443,9 +444,9 @@ app.get('/getQuestionIdsForRecentAnswers', function(req,res){
 
  
   //var loggedInUserId=user1;
-  var loggedInUserId=req.query.loggedInUserId
+  var loggedInUserId=parseInt(req.query.loggedInUserId);
   var params = {"startkey":[loggedInUserId,{}], "endkey":[loggedInUserId],"descending":true};
-  gatorDialogue.view('gatorDialogueDesignDoc','getQuestionIdsForRecentAnswers',params,function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc','getQuestionIdsForRecentAnswers',{"startkey":[loggedInUserId,{}], "endkey":[loggedInUserId],"descending":true},function(err, body) {
           if (err) { 
               console.log("getQuestionIdsForRecentAnswers failed");
               res.end("getQuestionIdsForRecentAnswers failed. " + err + "\n"); 
@@ -455,8 +456,9 @@ app.get('/getQuestionIdsForRecentAnswers', function(req,res){
 
             questionIdsForRecentAnswers = [];
             for(var i=0; i<body.rows.length; i++){
-                questionIdsForRecentAnswers.push(body.rows[i].value);
-                }
+              if (questionIdsForRecentAnswers.indexOf(body.rows[i].value) == -1) 
+                questionIdsForRecentAnswers.push(parseInt(body.rows[i].value));
+            }
 
 
             console.log("fetching questions now  ", questionIdsForRecentAnswers);
@@ -464,7 +466,7 @@ app.get('/getQuestionIdsForRecentAnswers', function(req,res){
             date=[];
             var params = {"keys":questionIdsForRecentAnswers}; 
            
-            gatorDialogue.view('gatorDialogueDesignDoc','getQuestionsFromIds',params,function(err, body) {
+            gatorDialogue.view('gatorDialogueDesignDoc','getQuestionsFromIds',{"keys":questionIdsForRecentAnswers},function(err, body) {
             
               if (err) { 
                   console.log("getQuestionsFromIds failed");
@@ -488,12 +490,6 @@ app.get('/leaderboard', function(req,res){
     if (err) { 
       return console.log('Looks like we dont have your session');
     }
-
-  //var loggedInUserId = 'user1';
-  // var params = {"startkey":[loggedInUserId],"endkey":[loggedInUserId,{}], "descending":false};
-  //var loggedInUserId=req.query.loggedInUserId;
-  
-  //var params = {"startkey":[{},{}], "endkey":[loggedInUserId],"descending":true};
   gatorDialogue.view('gatorDialogueDesignDoc','leaderboard',function(err, body) {
         if (err) { 
               console.log("leaderboard failed");
@@ -503,14 +499,17 @@ app.get('/leaderboard', function(req,res){
             console.log(body.rows);
             data=[];
             status= body.rows;
+            var j =1;
             for(var i=status.length-1; i>=0; i--){
               k = status[i].key;
               var item = [
+                Rank = j,
                 Reputation= k[1],
                 Gator= k[0]
                 
               ];
               data.push(item);
+              j++;
             }
             console.log(data);
             res.send(data);

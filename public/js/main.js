@@ -1,5 +1,5 @@
-//var serverUrl = "http://localhost:3000"
-var serverUrl = "https://gatordialogue.herokuapp.com"
+var serverUrl = "http://localhost:3000"
+//var serverUrl = "https://gatordialogue.herokuapp.com"
 
 function createUser(){
 	var data = new Object();
@@ -350,7 +350,7 @@ function addTag(tagName) {
   	data.tagName = tagName;
 
   	var request = $.ajax({
-		url: "http://localhost:3000/createTag",
+		url: serverUrl + "/createTag",
 		method: "POST",
 		data: JSON.stringify(data),
 		headers:{
@@ -556,7 +556,7 @@ var validateAnswer = function(answerId){
 
 var clearSession = function(){
 	localStorage.clear();
-	window.href = "/static/design/login.html"
+	window.location.href = "/static/design/login.html"
 }
 
 var loadUserProfile = function(){
@@ -567,7 +567,7 @@ var loadUserProfile = function(){
 	$('#profileInfoTable').DataTable({
     	"bLengthChange": false,
     	"pageLength": 10,
-        "ajax":"http://localhost:3000/loadUserProfile?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+        "ajax":serverUrl+ "/loadUserProfile?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
         	    
    "columns":[
  {   data : "userid"},
@@ -593,7 +593,7 @@ var loadUserProfile = function(){
 function drawChart() {
 	console.log("drawChart called");
     var request = $.ajax({
-		url : "http://localhost:3000/loadQuestionData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		url : serverUrl + "/loadQuestionData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
 		method: "GET",
 		headers:{
 			"Content-type":"application/x-www-form-urlencoded",
@@ -618,7 +618,7 @@ function drawChart() {
 function drawChart1() {
 	console.log("drawChart1called");
 	var request = $.ajax({
-		url : "http://localhost:3000/loadAnswerData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
+		url : serverUrl+ "/loadAnswerData?loggedInUserId="+JSON.parse(localStorage.getItem("loggedInUser")).userId,
 		method: "GET",
 		headers:{
 		"Content-type":"application/x-www-form-urlencoded",
@@ -664,7 +664,7 @@ var loadRecentQuestionsTable = function(){
 		$('#userRecentQuestionsWrapper').append("<table class=\"display\" width=\"100%\" id=\"recentQuestionsTable\"></table>");
 		$('#recentQuestionsTable').DataTable({
 	    	"bLengthChange": false,
-	    	"pageLength": 10,
+	    	"pageLength": 3,
 	        data: questions, 
 	        "aaSorting": [],
 	        columns: [
@@ -714,7 +714,7 @@ var loadRecentAnswersTable = function(){
 		$('#userRecentAnswersWrapper').append("<table class=\"display\" width=\"100%\" id=\"recentAnswersTable\"></table>");
 		$('#recentAnswersTable').DataTable({
 	    	"bLengthChange": false,
-	    	"pageLength": 10,
+	    	"pageLength": 3,
 	        data: questions, 
 	        "aaSorting": [],
 	        columns: [
@@ -760,15 +760,24 @@ var loadLeaderBoard = function(){
 	        responsive: true,
 	        fixedHeader: true,
 	        data:status,
-	       columns: [
-		        	{ title : "Gator",
-		       }, {title: "Reputation"}
+	       	columns: [
+	       	      {title : "Rank", "width": "30%"}, 
+		          {title : "Gator", "width": "35%"}, 
+		          {title: "Reputation", "width": "35%"}
 		     ],   
 		    //"columns":[{"data":"user"},{"data":"reputation"}],
-		    "columnDefs": [
-	     	{
-			targets: '_all', visible: true 
-   			}]
+		    "columnDefs": [{
+				targets: '_all', visible: true 
+   			}], 
+   			"order": [[ 0, 'asc' ]]
 		});
 	});
+}
+
+var goToLeaderBoard = function(){
+	window.location.href = "/static/design/leaderBoard.html"
+}
+
+var goToProfile = function(){
+	window.location.href = "/static/design/myProfile.html"
 }

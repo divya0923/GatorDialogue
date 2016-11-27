@@ -41,7 +41,7 @@
 										
  					</span> 
 					<ul class="nav nav-pills"> 
-						<li class="mt15">
+						<li class="mt15 leaderBoardLink" onclick="goToLeaderBoard()">
 							<i class="fa fa-trophy fa-lg" aria-hidden="true"></i> Leaderboard 		
 						</li>
 				    	<li role="presentation" class="dropdown">
@@ -51,9 +51,9 @@
 					      		<span class="caret"></span>
 					    	</a>
 						    <ul class="dropdown-menu" id="profileMenu">
-						    	<li> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
+						    	<li onclick="goToProfile()"> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
 						    	<li> <i class="fa fa-cog fa-lg" aria-hidden="true"></i> Settings </li>
-						    	<li> <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i> Logout </li>
+						    	<li onclick="clearSession()"> <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i> Logout </li>
 						    </ul>
 				  		</li>
 				  	</ul>

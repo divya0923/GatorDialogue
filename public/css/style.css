@@ -12,8 +12,36 @@
     display:none;
 }
 
+#leaderBoardTable_filter, #leaderBoardTable_info{
+    display: table-header-group !important;
+}
+
+#leaderBoardTable thead{
+    display: table-header-group !important;
+}
+
+#leaderBoardTable_filter{
+    margin-left: 650px;
+}
+
+#leaderBoardTable{
+    border: 1px solid #111;
+}
+
 #registerUserBtn {
 	margin-left: 150px;
+}
+
+#stars, #favorites, #following{
+    height: 60px !important;
+    color: black !important;
+}
+
+.well {
+    background-image: none !important;
+    border-color: white !important;
+    background-color: white !important;
+    border: none !important;
 }
 
 .headergraph {
@@ -343,7 +371,7 @@ justify-content: center;
 input[type=text], input[type=Search], textarea{
 border-radius: 3px;
     vertical-align: middle;
-    width: 100%;
+    /* width: 100%; */
     padding: 9px 12px;
     border: 1px #dedede solid;
     background: #fff;
@@ -1062,5 +1090,13 @@ textarea.error{
     height: 40px;
     margin-bottom: 2px;
     cursor: pointer;
+}
+
+.leaderBoardLink{
+    cursor : pointer;
+}
+
+.dropdown-menu li {
+    cursor : pointer;
 }
 

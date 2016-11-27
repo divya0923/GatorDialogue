@@ -11,96 +11,145 @@
 <script type="text/javascript" src="/static/lib/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="/static/css/jquery.dataTables.min.css">
 
-<link rel="stylesheet" href="/static/css/leaderBoard.css"/>
+<link rel="stylesheet" href="/static/css/leaderBoard.css"/> 
+<link rel="stylesheet" href="/static/css/style.css"/>
+<link rel="stylesheet" href="/static/css/font-awesome-4.4.0/css/font-awesome.min.css">
 
 <script type="text/javascript">
   $(document).ready(function(){
-    // load userName
-    //$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
+    $("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
     loadLeaderBoard();
   });
   </script>
-
-
 </head>
 <body>
+  <header>
+    <div class="container">
+      <nav class="navbar fs20" role="navigation">
+        <div class="left mt15 logo">
+          <a href="/static/design/home.html" class="logo"><img src="/static/images/logo.png"></a>
+        </div>
+        <div class="right mt15">
+          <span class="leaderBoard">        
+          </span> 
+          <ul class="nav nav-pills"> 
+            <li class="mt15 leaderBoardLink" onclick="goToLeaderBoard()">
+              <i class="fa fa-trophy fa-lg" aria-hidden="true"></i> Leaderboard     
+            </li>
+              <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="/static/images/profile.jpg"> 
+                    <span id="headerUserID">  </span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="profileMenu">
+                  <li onclick="goToProfile()"> <i class="fa fa-user fa-lg" aria-hidden="true"></i> My Profile </li>
+                  <li> <i class="fa fa-cog fa-lg" aria-hidden="true"></i> Settings </li>
+                  <li onclick="clearSession()"> <i class="fa fa-sign-out fa-lg" aria-hidden="true"></i> Logout </li>
+                </ul>
+              </li>
+            </ul>
+        </div>
+            </nav>
+    </div>
+  </header>
+  <hr class="colorgraph headergraph">
 
+  <div class="container grid">
+    <section class="jk-slider">
+        <div id="carousel-example" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carousel-example" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example" data-slide-to="1"></li>
+            <li data-target="#carousel-example" data-slide-to="2"></li>
+          </ol>
 
-<section class="jk-slider">
-    <div id="carousel-example" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carousel-example" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example" data-slide-to="1"></li>
-    <li data-target="#carousel-example" data-slide-to="2"></li>
-  </ol>
+        <div class="carousel-inner">
+          <div class="item active">
+            <a href="#"><img src="/static/images/blue.jpg" height="200px" width="100%" /></a>
+            	<div class="hero">
+              <hgroup>
+                  <h1 style="color:orange;">More than 1000 users</h1>        
+              </hgroup>
+              
+            </div>
+          </div>
+          <div class="item">
+            <a href="#"><img src="/static/images/blue.jpg" height="200px"  width="100%" /></a>
+            <div class="hero">
+              <hgroup>
+                  <h1 style="color:orange;">More than 10000 questions</h1>        
+              </hgroup>
+              
+            </div>
+          </div>
+          <div class="item">
+            <a href="#"><img src="/static/images/blue.jpg" height="200px" width="100%" /></a>
+            <div class="hero">
+              <hgroup>
+                  <h1 style="color:orange;">More than 300 categories</h1>        
+              </hgroup>
+              
+            </div>
+          </div>
+        </div>
 
-  <div class="carousel-inner">
-    <div class="item active">
-      <a href="#"><img src="/static/images/blue.jpg" height="200px" width="100%" /></a>
-      	<div class="hero">
-        <hgroup>
-            <h1 style="color:orange;">More than 1000 users</h1>        
-            <!--<h3>the books you need and save ! </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</p>-->
-        </hgroup>
-        
+        <a class="left carousel-control" href="#carousel-example" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a class="right carousel-control" href="#carousel-example" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>	
+    </section>
+    <div class="left grid-col col80 mt20">
+      <div class="section-title">
+          <span>LeaderBoard</span>
+      </div>
+      <div id="leaderBoardWrapper" class="mb40">
+          <table id="leaderBoardTable" class="display" width=1000>
+           <thead>
+                <th>Rank</th>
+                <th>Gator</th>
+                <th>Reputation</th>
+            </thead>
+          </table>
       </div>
     </div>
-    <div class="item">
-      <a href="#"><img src="/static/images/blue.jpg" height="200px"  width="100%" /></a>
-      <div class="hero">
-        <hgroup>
-            <h1 style="color:orange;">More than 10000 questions</h1>        
-           <!-- <h3>the books you need and save ! </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</p>-->
-        </hgroup>
-        
-      </div>
+
+    <div class="right grid-col col25 mt15 mr85">
+      <div id="relatedQuestions">
+          <h4> Related Questions </h4>
+          <ul class="bg-white">
+            <li> <a> What does “%3d” mean in a printf statement? </a> </li>
+            <li> <a> What does “%3d” mean in a printf statement? </a> </li>
+            <li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li> 
+            <li> <a> Why can issuing the same command create more output in tty than in pts/gnome-terminal? </a> </li>
+          </ul>
+        </div>
     </div>
-    <div class="item">
-      <a href="#"><img src="/static/images/blue.jpg" height="200px" width="100%" /></a>
-      <div class="hero">
-        <hgroup>
-            <h1 style="color:orange;">More than 300 categories</h1>        
-           <!-- <h3>the books you need and save ! </h3>
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged</p>-->
-        </hgroup>
-        
-      </div>
-    </div>
+
   </div>
 
-  <a class="left carousel-control" href="#carousel-example" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left"></span>
-  </a>
-  <a class="right carousel-control" href="#carousel-example" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right"></span>
-  </a>
-</div>
-	
-</section>
-
-   <div class="left grid-col col80 mt30" style="float: center;width: 850px;margin:auto;">
+   <!-- <div class="left grid-col col80 mt30" style="float: center;width: 850px;margin:auto;">
 
       <div>
         
         <div style="float: left; width: 700px;">
-          <!--<div class="project-box">Leaderboard</div>-->
+          <div class="project-box">Leaderboard</div>
           <div id="leaderBoardWrapper" class="mb40">
           <table id="leaderBoardTable" class="display" width=1000>
- <!--           <thead>
+           <thead>
               <tr>
                 <th>Gator</th>
                 <th>Reputation</th>
               </tr>
-            </thead>-->
+            </thead>
           </table>
           </div>
         </div>
-        <!--<div style="float: left; width: 200px;">Right Stuff</div>-->
-        <!--<br style="clear: left;" />-->
       </div>
-    </div>
+    </div> -->
 
 </body>
 </html>
