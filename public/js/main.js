@@ -153,7 +153,6 @@ var loadQuestionsTable = function(){
 		}
 	});
 	request.done(function(data) {
-		console.log("questions %o", data);
 		var questions = [];
 		for (var i=0; i< data.length; i++){
 			var questionArr = [];
@@ -163,7 +162,6 @@ var loadQuestionsTable = function(){
 			questions.push(questionArr);
 		}
 
-		console.log("questions array %o", questions);
 		$('#questionsTableWrapper').empty()
 		$('#questionsTableWrapper').append("<table class=\"display\" width=\"100%\" id=\"questionsDTable\"></table>");
 		$('#questionsDTable').DataTable({
@@ -191,8 +189,6 @@ var loadQuestionsTable = function(){
 }
 
 var constructQuestionData = function(data){
-	console.log("constructQuestionData %o", data);
-
 	// construct tags markup 
 	var tagStr = "";
 	if(data.tags != "" && data.tags != null){
@@ -278,7 +274,6 @@ function initializeSelectivityForQuestionTags(){
 		}
 	});
 	request.done(function(data) {
-		console.log("tags %o", data.length);
 		var items = [];
 		for(i=0;i<data.length;i++){
 			var item = {
@@ -287,18 +282,15 @@ function initializeSelectivityForQuestionTags(){
 			};
 			items.push(item);
 		}
-		console.log("items %o", items.length);
 		$('#questionTags').selectivity({
 			items: items,
 			multiple: true,
 		   	placeholder: 'Tags',
 		   	createTokenItem: function(token){
-		   	 	console.log('create token item called %o',token);
 		   	 	$('.selectivity-multiple-input').val("");
 		   	 	var itemArray = $('#questionTags').selectivity('data');
 		   	 	// When there are no categories in the system
 		   	 	if(itemArray == ""){
-		   	 		console.log('added session cat if');
 		   	 		$('#questionTagsForm #tags').val(token);
 	   	 			var tagId = addTag(token);
 			   	 	var pluginItem = {
@@ -349,7 +341,6 @@ function getTags() {
 		}
 	});
 	request.done(function(data) {
-		console.log("tags %o", data.length);
 		//constructSelectivityDataForTags(data);
 	    return data;
 	});	 
@@ -403,14 +394,27 @@ function uniqueId() {
 	return i;
 }
 
+// datepart: 'y', 'm', 'w', 'd', 'h', 'n', 's'
+Date.dateDiff = function(datepart, fromdate, todate) {	
+  datepart = datepart.toLowerCase();	
+  var diff = todate - fromdate;	
+  var divideBy = { w:604800000, 
+                   d:86400000, 
+                   h:3600000, 
+                   n:60000, 
+                   s:1000 };	
+  
+  return Math.floor( diff/divideBy[datepart]);
+}
+
 function getTimeDiff(datetime){
+  
     var datetime = typeof datetime !== 'undefined' ? datetime : "2014-01-01 01:02:03.123456";
     var datetime = new Date( datetime ).getTime();
     var now = new Date().getTime();
     if( isNaN(datetime)){
         return "";
     }
-	console.log( datetime + " " + now);
     if (datetime < now) {
         var milisec_diff = now - datetime;
     }else{
@@ -522,7 +526,6 @@ var loadAnswersTable = function(){
 		}
 	});
 	request.done(function(data) {
-		console.log("questions %o", data);
 		var answers = [];
 		for (var i=0; i< data.length; i++){
 			var answerArr = [];
@@ -694,7 +697,6 @@ var loadRecentQuestionsTable = function(){
 		}
 	});
 	request.done(function(data) {
-		console.log("questions %o", data);
 		var questions = [];
 		for (var i=0; i< data.length; i++){
 			var questionArr = [];

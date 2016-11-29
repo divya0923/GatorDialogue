@@ -20,6 +20,12 @@
     display: table-header-group !important;
 }
 
+
+#questionsDTable_filter{
+    margin-left: 657px;
+    display: inline;
+}
+
 #leaderBoardTable_filter{
     margin-left: 650px;
 }
