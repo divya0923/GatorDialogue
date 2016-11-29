@@ -404,22 +404,19 @@ function uniqueId() {
 	return i;
 }
 
-// datepart: 'y', 'm', 'w', 'd', 'h', 'n', 's'
-Date.dateDiff = function(datepart, fromdate, todate) {	
-  datepart = datepart.toLowerCase();	
-  var diff = todate - fromdate;	
-  var divideBy = { w:604800000, 
-                   d:86400000, 
-                   h:3600000, 
-                   n:60000, 
-                   s:1000 };	
-  
-  return Math.floor( diff/divideBy[datepart]);
-}
 
 function getTimeDiff(datetime){
-  
-    var datetime = typeof datetime !== 'undefined' ? datetime : "2014-01-01 01:02:03.123456";
+
+	var olderDate = new Date(datetime);
+	var currentDate = new Date();
+  	var diff = currentDate - olderDate;	
+  	var secDiff = Math.floor(diff / 1e3);
+  	var minDiff = Math.floor(diff / 60e3);
+  	var hourDiff = Math.floor(diff/(3600 * 1000));
+  	var dayDiff = Math.floor(diff/(1000 * 24 * 3600));
+  	console.log("difff :" + secDiff + " " + minDiff + " " + hourDiff + " " + dayDiff);
+
+    /*var datetime = typeof datetime !== 'undefined' ? datetime : "2014-01-01 01:02:03.123456";
     var datetime = new Date( datetime ).getTime();
     var now = new Date().getTime();
     if( isNaN(datetime)){
@@ -432,16 +429,16 @@ function getTimeDiff(datetime){
     }
     var days = Math.floor(milisec_diff / 1000 / 60 / (60 * 24));
     var date_diff = new Date( milisec_diff );
-    var dateStr = "";
+    var dateStr = "";*/
 
-    if (days > 0)
-    	dateStr = days + " days ago";
-    else if (date_diff.getHours() > 0)
-    	dateStr = date_diff.getHours() + " hours ago";
-    else if(date_diff.getMinutes() > 0)
-    	dateStr = date_diff.getMinutes() + " minutes ago";
+    if (dayDiff > 0)
+    	dateStr = dayDiff + " days ago";
+    else if (hourDiff > 0)
+    	dateStr = hourDiff + " hours ago";
+    else if(minDiff > 0)
+    	dateStr = minDiff + " minutes ago";
     else 
-    	dateStr = date_diff.getSeconds() + " seconds ago";
+    	dateStr = secDiff + " seconds ago";
     return dateStr;
 }
 
