@@ -46,7 +46,7 @@
 #loader {
   position: absolute;
   left: 43%;
-  top: 100%;
+  top: 70%;
   z-index: 1;
   width: 150px;
   height: 150px;
@@ -61,7 +61,7 @@
 }
 
 #loaderLB{
-    top: 180%;
+    top: 150%;
 }
 
 @-webkit-keyframes spin {
