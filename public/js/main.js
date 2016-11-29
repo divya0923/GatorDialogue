@@ -467,9 +467,13 @@ var loadQuestionData = function(){
 			tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.value.tags[i].text + '</a>';
 		}
 
+		var displayname = data.value.displayname;
+		if(displayname == undefined || displayname == null || displayname == "")
+			displayname = data.value.user;
+
 		$("#questionTags").html(tagStr);
 		$("#timeStamp").text(getTimeDiff(new Date(data.value.timeStamp)));
-		$("#userName").text(data.value.displayname);
+		$("#userName").text(displayname);
 
 	});	 
 	request.fail(function( jqXHR, textStatus ) {
