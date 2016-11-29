@@ -20,7 +20,7 @@
 	$(document).ready(function(){
 		validateSession();
 		CKEDITOR.replace('questionAnswer');
-		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
+		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayname);
 		loadQuestionData();
 		loadAnswersTable();
 		$("#postAnswerBtn").click(function() {

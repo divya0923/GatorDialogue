@@ -22,7 +22,7 @@
 	$(document).ready(function(){
 		validateSession();
 
-		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
+		$("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayname);
 
         CKEDITOR.replace('questionDesc');
         initializeSelectivityForQuestionTags();

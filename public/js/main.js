@@ -10,11 +10,11 @@ function createUser(){
 	data.password = $('#password')[0].value;
 	data.userId = uniqueId();
 	data.email = $('#email')[0].value;
-	data.displayName = $('#fname')[0].value;
+	data.displayname = $('#fname')[0].value;
 	data.department = $('#department')[0].value;
 	data.reputation = 0;
 
-	if(data.name != "" && data.password != "" && data.email != "" && data.displayName != "" && data.department != "") {
+	if(data.name != "" && data.password != "" && data.email != "" && data.displayname != "" && data.department != "") {
 	    var request = $.ajax({
 			url: serverUrl + "/createUser",
 			method: "POST",
@@ -105,7 +105,7 @@ var postQuestion = function(){
 	data.question = CKEDITOR.instances.questionDesc.getData();
 	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;
 	data.user = JSON.parse(localStorage.getItem("loggedInUser")).name;
-	data.displayName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	data.displayname = JSON.parse(localStorage.getItem("loggedInUser")).displayname;
 	data.timeStamp = new Date();
 	data.questionId = uniqueId();
 
@@ -215,7 +215,7 @@ var constructQuestionData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.displayName +'</a>' +  
+		                    '<a href="#">'+ data.displayname +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
@@ -256,7 +256,7 @@ var constructAnswerData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.displayName +'</a>' +  
+		                    '<a href="#">'+ data.displayname +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
@@ -461,7 +461,7 @@ var loadQuestionData = function(){
 
 		$("#questionTags").html(tagStr);
 		$("#timeStamp").text(getTimeDiff(new Date(data.value.timeStamp)));
-		$("#userName").text(data.value.displayName);
+		$("#userName").text(data.value.displayname);
 
 	});	 
 	request.fail(function( jqXHR, textStatus ) {
@@ -475,7 +475,7 @@ var postAnswer = function(){
 	data.answer = CKEDITOR.instances.questionAnswer.getData();
 	data.userId = JSON.parse(localStorage.getItem("loggedInUser")).userId;;
 	data.user = JSON.parse(localStorage.getItem("loggedInUser")).name;
-	data.displayName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	data.displayname = JSON.parse(localStorage.getItem("loggedInUser")).displayname;
 	data.timeStamp = new Date();
 	data.questionId = parseInt(localStorage.getItem("currentQuestionId"));
 	data.answerId = uniqueId();
@@ -579,7 +579,7 @@ var updateAnswerVote = function(answerId, isIncVote){
 var validateAnswer = function(answerId){
 	console.log("%o", answerId, $("#" + answerId));
 	var userId = $('#' + answerId).attr('userid');
-	var profName = JSON.parse(localStorage.getItem("loggedInUser")).displayName;
+	var profName = JSON.parse(localStorage.getItem("loggedInUser")).displayname;
 	var request = $.ajax ({
 		url: serverUrl + "/validateAnswer?answerId=" + answerId + "&validatedBy=" + profName + "&userId="  + userId,
 		method: "GET",

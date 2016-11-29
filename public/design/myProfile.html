@@ -25,9 +25,9 @@
     $(document).ready(function(){
         validateSession();
         // load userName
-        $("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
-        $("#userId").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
-        $("#firstNameID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayName);
+        $("#headerUserID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayname);
+        $("#userId").text(JSON.parse(localStorage.getItem("loggedInUser")).displayname);
+        $("#firstNameID").text(JSON.parse(localStorage.getItem("loggedInUser")).displayname);
         $("#departmentID").text(JSON.parse(localStorage.getItem("loggedInUser")).department);
         loadRecentQuestionsTable();
         loadRecentAnswersTable();
