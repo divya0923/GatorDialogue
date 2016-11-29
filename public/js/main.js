@@ -463,10 +463,12 @@ var loadQuestionData = function(){
 		$("#questionDesc").html(jQuery.parseHTML(data.value.question));
 
 		var tagStr = "";
-		for(var i=0; i< data.value.tags.length;i++){
-			tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.value.tags[i].text + '</a>';
+		if(data.value.tags != undefined || data.value.tags != null || data.value.tags != ""){
+			for(var i=0; i< data.value.tags.length;i++){
+				tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.value.tags[i].text + '</a>';
+			}
 		}
-
+		
 		var displayname = data.value.displayname;
 		if(displayname == undefined || displayname == null || displayname == "")
 			displayname = data.value.user;
