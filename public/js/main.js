@@ -162,7 +162,7 @@ var loadQuestionsTable = function(){
 			questions.push(questionArr);
 		}
 
-		$('#questionsTableWrapper').empty()
+		$('#questionsTableWrapper').empty();
 		$('#questionsTableWrapper').append("<table class=\"display\" width=\"100%\" id=\"questionsDTable\"></table>");
 		$('#questionsDTable').DataTable({
 	    	"bLengthChange": false,
@@ -185,6 +185,8 @@ var loadQuestionsTable = function(){
 	            }
 	        ]
 	    });
+
+	    $("#loader")[0].style.display = "none";
 	});
 }
 

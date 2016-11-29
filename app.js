@@ -508,7 +508,7 @@ app.get('/leaderboard', function(req,res){
               k = status[i].key;
               var item = [
                 Rank = j,
-                Reputation= k[1],
+                Reputation = k[1],
                 Gator= k[0]
                 
               ];
