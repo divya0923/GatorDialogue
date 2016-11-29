@@ -195,8 +195,10 @@ var constructQuestionData = function(data){
 
 	// construct tags markup 
 	var tagStr = "";
-	for(var i=0; i< data.tags.length;i++){
-		tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.tags[i].text + '</a>';
+	if(data.tags != "" && data.tags != null){
+		for(var i=0; i< data.tags.length;i++){
+			tagStr += '<a href="#" class="post-tag js-gps-track" title="" rel="tag">'+ data.tags[i].text + '</a>';
+		}
 	}
 
 	// calculate time difference 
