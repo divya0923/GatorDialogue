@@ -834,6 +834,7 @@ var loadLeaderBoard = function(){
    			}], 
    			"order": [[ 0, 'asc' ]]
 		});
+		$("#loader")[0].style.display = "none";
 	});
 }
 

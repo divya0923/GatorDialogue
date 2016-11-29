@@ -45,8 +45,8 @@
 
 #loader {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 43%;
+  top: 100%;
   z-index: 1;
   width: 150px;
   height: 150px;
@@ -580,7 +580,7 @@ overflow-x: hidden;
     /* padding: 10px; */
     font-size: 18px;
     /* text-align: center; */
-    border-bottom: 2px solid grey;
+    border-bottom: 2px solid #D3D3D3;
 }
 
 .ui-widget-header .ui-icon {
@@ -998,7 +998,7 @@ textarea.error{
 }
 
 .lightBorder {
-    border-bottom: 1px solid grey;
+    /* border-bottom: 1px solid grey; */
 }
 
 .post-text {
