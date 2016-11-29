@@ -200,6 +200,10 @@ var constructQuestionData = function(data){
 	// calculate time difference 
 	var timeStamp = getTimeDiff(new Date(data.timeStamp));
 
+	var displayname = data.displayname;
+	if(displayname == undefined || displayname == null || displayname == "")
+		displayname = data.user;
+
 	// question markup for dataTable
 	var questionStr = '<div class="left pr20">' +
 		                    '<div class="quesTitle"><a class="link clblue" onclick=openQuestionView(' + data.questionId +')>' + data.title +'</a></div>'+
@@ -215,7 +219,7 @@ var constructQuestionData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.displayname +'</a>' +  
+		                    '<a href="#">'+ displayname +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
@@ -235,6 +239,10 @@ var constructAnswerData = function(data){
 	else if(localStorage.getItem("isProfessor") == "true"){
 			validateStr = '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="star-off" title="Click here to validate this answer" onclick=validateAnswer('+ data.answerId +')></a>';
 	}
+
+	var displayname = data.displayname;
+	if(displayname == undefined || displayname == null || displayname == "")
+		displayname = data.user;
 		
 	var voteStr = '<div class="vote">'+
 	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-up-off" onclick=updateAnswerVote('+ data.answerId + ',' + true + ')>up vote</a>'+
@@ -256,7 +264,7 @@ var constructAnswerData = function(data){
 		                    '<a href="#"><div class="gravatar-wrapper-32"><img src="https://www.gravatar.com/avatar/335a9ae9364e36c131fb599feaf0e540?s=32&amp;d=identicon&amp;r=PG&amp;f=1" alt="" width="32" height="32"></div></a>' +
 		                    '</div>' +
 		                    '<div class="user-details">' + 
-		                    '<a href="#">'+ data.displayname +'</a>' +  
+		                    '<a href="#">'+ displayname +'</a>' +  
 		                    '</div>' + 
 		                    '</div></div>'
 							'</div>';
