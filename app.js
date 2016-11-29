@@ -194,7 +194,7 @@ app.get("/getQuestionData", function(req, res){
 
 // get all answers of a question 
 app.get("/getQuestionAnswers", function(req, res){
-  gatorDialogue.view('gatorDialogueDesignDoc', 'answerView', { key: req.query.questionId }, function(err, body) {
+  gatorDialogue.view('gatorDialogueDesignDoc', 'answerView', { key: parseInt(req.query.questionId) }, function(err, body) {
     if (!err) {
       res.send(body.rows);
     }
