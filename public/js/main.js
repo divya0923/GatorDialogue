@@ -251,6 +251,13 @@ var constructAnswerData = function(data){
 	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-down-off" onclick=updateAnswerVote('+ data.answerId  + ',' + false +')>down vote</a>'+
 	               validateStr + '</div>';
 
+	if(data.userId == JSON.parse(localStorage.getItem("loggedInUser")).userId)
+		voteStr = '<div class="vote">'+
+	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-up-off">up vote</a>'+
+	              '<span id="votes'+ data.answerId+'" class="vote-count-post ">'+ data.votes +'</span>'+
+	              '<a userId="'+ data.user + '" id="'+ data.answerId +'" class="vote-down-off">down vote</a>'+
+	               validateStr + '</div>';
+
 	var answerStr = '<div class="left pr20 answerBlock">' + voteStr +
 
 		                    '<div class="answerText">' + data.answer +'</div>'+
