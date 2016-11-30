@@ -336,9 +336,11 @@ width: 70%;
 padding: 2px 25px 2px 25px;
 }
 
-.mr85{
-    margin-right: -85px;
+.mr85 {
+    margin-right: -72px;
+    margin-top: 4px;
 }
+
 .side-nav-links li{
 padding: 25px;
 border-bottom: 1px solid #f3f5f7;
