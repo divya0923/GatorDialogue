@@ -229,7 +229,6 @@ var constructQuestionData = function(data){
 }
 
 var constructAnswerData = function(data){
-	console.log("constructAnswerData %o", data);
 
 	// calculate time difference 
 	var timeStamp = getTimeDiff(new Date(data.timeStamp));
@@ -414,8 +413,7 @@ function getTimeDiff(datetime){
   	var minDiff = Math.floor(diff / 60e3);
   	var hourDiff = Math.floor(diff/(3600 * 1000));
   	var dayDiff = Math.floor(diff/(1000 * 24 * 3600));
-  	console.log("difff :" + secDiff + " " + minDiff + " " + hourDiff + " " + dayDiff);
-
+  	
     /*var datetime = typeof datetime !== 'undefined' ? datetime : "2014-01-01 01:02:03.123456";
     var datetime = new Date( datetime ).getTime();
     var now = new Date().getTime();
