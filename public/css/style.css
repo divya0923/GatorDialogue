@@ -812,14 +812,14 @@ textarea.error{
 .post-signature {
     text-align: left;
     vertical-align: top;
-    width: 160px;
+    width: 176px;
   height : 70px;
   border-radius: 4px !important;
 }
 .post-signature-answer {
     text-align: left;
     vertical-align: top;
-    width: 170;
+    width: 180 px;
   height : 70px;
   border-radius: 4px !important;
 }

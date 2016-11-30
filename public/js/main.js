@@ -461,6 +461,8 @@ var loadQuestionData = function(){
 		$("#questionTitle").text(data.value.title);
 		$("#questionDesc").html(jQuery.parseHTML(data.value.question));
 
+		localStorage.setItem("currentQueCat", data.value.category);
+		
 		var tagStr = "";
 		if(data.value.tags != undefined || data.value.tags != null || data.value.tags != ""){
 			for(var i=0; i< data.value.tags.length;i++){
@@ -495,6 +497,7 @@ var postAnswer = function(){
 	data.votes = 0;
 	data.isValidated = false;
 	data.validatedBy = "";
+	data.category = localStorage.getItem("currentQueCat");
 	if(data.answer != ""){
 		var request = $.ajax({
 			url : serverUrl + "/postAnswer",
