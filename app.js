@@ -5,7 +5,7 @@ var app = express();
 //var nano = require('nano')('http://127.0.0.1:5984/')//  ;
 var nano = require('nano')('https://couchdb-c0e747.smileupps.com');
 var user = nano.db.use('_users');
-var gatorDialogue = nano.db.use("gatordialoguedb");
+var gatorDialogue = nano.db.use("gatordialogue");
 
 // static files 
 app.use('/static', express.static(__dirname + '/public'));
